@@ -3,3 +3,6 @@ xcuserdata
 damus/TestingPrivate.swift
 .DS_Store
 TODO.bak
+/Pods
+/Podfile.lock
+/package-lock.json
