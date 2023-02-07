@@ -38,9 +38,11 @@ struct SetupView: View {
     @State var state: SetupState? = .home
     @State private var isShowingScanner = false
     @State var scanresult: String = ""
+    @State private var isShowingCarousel = false
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
 
     func handleScan(result: Result<ScanResult, ScanError>) {
-       isShowingScanner = false
+        isShowingScanner = false
         
         switch result {
         case .success(let result):
@@ -50,56 +52,167 @@ struct SetupView: View {
             print("Scanning failed: \(error.localizedDescription)")
         }
     }
-
+    
     var body: some View {
         NavigationView {
             ZStack {
                 DamusGradient()
                 
-                VStack(alignment: .center) {
-                    NavigationLink(destination: EULAView(state: state), tag: .create_account, selection: $state ) {
-                        EmptyView()
-                    }
-                    NavigationLink(destination: EULAView(state: state), tag: .login, selection: $state ) {
-                        EmptyView()
-                    }
+                ZStack() {
                     
-                    Image("logo-nobg")
-                        .resizable()
-                        .frame(width: 128.0, height: 128.0, alignment: .center)
-                        .padding([.top], 20.0)
-                    Text("Damus", comment: "Name of the app, shown on the first screen when user is not logged in.")
-                        .font(Font.custom("Nunito", size: 50.0))
-                        .kerning(-2)
-                        .foregroundColor(.white)
-                    
-                    CarouselView()
-                    
-                    DamusWhiteButton(NSLocalizedString("Create Account", comment: "Button to create an account.")) {
-                        self.state = .create_account
-                    }
-                    
-                    Button(NSLocalizedString("Login", comment: "Button to log into an account.")) {
-                        self.state = .login
-                    }
-                    .padding([.top, .bottom], 20)
-                    .foregroundColor(.white)
-                    
-                    Button(NSLocalizedString("Scan", comment: "Button to log into an account.")) {
+                    VStack(alignment: .center) {
+                        NavigationLink(destination: EULAView(state: state), tag: .create_account, selection: $state ) {
+                            EmptyView()
+                        }
+                        NavigationLink(destination: EULAView(state: state), tag: .login, selection: $state ) {
+                            EmptyView()
+                        }
+                        
+                        Image("Feeds-logo-signin")
+                            .resizable()
+                            .frame(width: 200, height: 133.3, alignment: .center)
+                            .padding([.top], 20.0)
+                        
+                        Text("Web3 社交网络").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
 
-                        self.isShowingScanner = true
+                        
+                        Spacer()
+                        
+                        VStack(spacing: 1) {
+                            Text("登录").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            Text("请选择应用登录方式").foregroundColor(.white).bold().font(.system(size: 15)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            Button("Elastos Essentials") {
+                                
+                                self.isShowingScanner = true
+                            }.frame(width: 300, height: 44)
+                                .cornerRadius(22)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                }.background(
+                                    LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                                ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            
+                            Button("访客方式登录") {
+                                
+                                self.isShowingCarousel = true
+                            }.frame(width: 300, height: 44)
+                                .cornerRadius(22)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                }.background(
+                                    LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                                ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            
+                            Button("了解更多") {
+                                self.isShowingCarousel = true
+                                
+                            }.frame(width: 300, height: 44)
+                                .cornerRadius(22)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                }.background(
+                                    LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                                ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            
+                            
+                            HStack(spacing: 0) {
+                                Text("登录表明你同意我们的").font(.system(size: 10)).foregroundColor(.white)
+                                Button("条款") {
+                                    
+                                }.font(.system(size: 10)).foregroundColor(.blue)
+                                Text("、").font(.system(size: 10)).foregroundColor(.white)
+                                Button("隐私政策") {
+                                    
+                                }.font(.system(size: 10)).foregroundColor(.blue)
+                            }.padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            
+                            Spacer()
+                            
+                        }.frame(width: UIScreen.main.bounds.size.width, height: 400)
+                            .background(Color(hex: "161C24"))
+                            .cornerRadius(20)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 20).stroke(.blue, lineWidth: 1)
+                            }
+                        
                     }
-                    .padding([.top, .bottom], 20)
-                    .foregroundColor(.white)
+
+                    VStack {
+                        Spacer()
+                        ZStack {
+                            CarouselView().frame(height: 450).background(Color(hex: "161C24")).padding(EdgeInsets(top: 0, leading: 0, bottom: safeAreaInsets.bottom + 50, trailing: 0))
+                            
+                            VStack {
+                                Spacer()
+                                Button("隐私政策") {
+                                    self.isShowingCarousel = false
+                                }.font(.system(size: 20)).foregroundColor(.white).frame(height: 50)
+                            }.padding(EdgeInsets(top: 0, leading: 0, bottom: safeAreaInsets.bottom, trailing: 0))
+                            
+                        }.frame(height: 500)
+                    }.opacity(self.isShowingCarousel ? 1 : 0)
                     
-                    Text(self.scanresult).padding(20).foregroundColor(.white)
-                }
-            }.sheet(isPresented: $isShowingScanner) {
-                CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: handleScan)
+                    
+                }.sheet(isPresented: $isShowingScanner) {
+                    CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: handleScan)
+                }.edgesIgnoringSafeArea(.bottom)
+                
+                
             }
+            
+            
+            
+            
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationViewStyle(StackNavigationViewStyle())
+    }
+}
+
+private struct SafeAreaInsetsKey: EnvironmentKey {
+    static var defaultValue: EdgeInsets {
+        (UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.safeAreaInsets ?? .zero).insets
+    }
+}
+
+extension EnvironmentValues {
+    
+    var safeAreaInsets: EdgeInsets {
+        self[SafeAreaInsetsKey.self]
+    }
+}
+
+private extension UIEdgeInsets {
+    
+    var insets: EdgeInsets {
+        EdgeInsets(top: top, leading: left, bottom: bottom, trailing: right)
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+        
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
 
@@ -116,7 +229,7 @@ func DamusWhiteButton(_ title: String, action: @escaping () -> ()) -> some View 
                     .background(Color.white.opacity(0.15))
             )
     }
-                    
+    
 }
 
 struct SetupView_Previews: PreviewProvider {
