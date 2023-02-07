@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CodeScanner
 
 func hex_col(r: UInt8, g: UInt8, b: UInt8) -> Color {
     return Color(.sRGB,
@@ -35,7 +36,21 @@ struct DamusGradient: View {
 
 struct SetupView: View {
     @State var state: SetupState? = .home
-    
+    @State private var isShowingScanner = false
+    @State var scanresult: String = ""
+
+    func handleScan(result: Result<ScanResult, ScanError>) {
+       isShowingScanner = false
+        
+        switch result {
+        case .success(let result):
+            print(result.string)
+            self.scanresult = result.string
+        case .failure(let error):
+            print("Scanning failed: \(error.localizedDescription)")
+        }
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -69,7 +84,18 @@ struct SetupView: View {
                     }
                     .padding([.top, .bottom], 20)
                     .foregroundColor(.white)
+                    
+                    Button(NSLocalizedString("Scan", comment: "Button to log into an account.")) {
+
+                        self.isShowingScanner = true
+                    }
+                    .padding([.top, .bottom], 20)
+                    .foregroundColor(.white)
+                    
+                    Text(self.scanresult).padding(20).foregroundColor(.white)
                 }
+            }.sheet(isPresented: $isShowingScanner) {
+                CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: handleScan)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
