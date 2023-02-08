@@ -71,9 +71,9 @@ struct SetupView: View {
                         Image("Feeds-logo-signin")
                             .resizable()
                             .frame(width: 200, height: 133.3, alignment: .center)
-                            .padding([.top], 20.0)
+                            .padding([.top], 80.0)
                         
-                        Text("Web3 社交网络").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                        Text("Web3 社交网络").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 40, leading: 0, bottom: 0, trailing: 0))
 
                         
                         Spacer()
@@ -81,7 +81,7 @@ struct SetupView: View {
                         VStack(spacing: 1) {
                             Text("登录").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
                             Text("请选择应用登录方式").foregroundColor(.white).bold().font(.system(size: 15)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
-                            Button("Elastos Essentials") {
+                            Button("导入Elastos DID") {
                                 
                                 self.isShowingScanner = true
                             }.frame(width: 300, height: 44)
@@ -92,7 +92,7 @@ struct SetupView: View {
                                     LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
                                 ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
                             
-                            Button("访客方式登录") {
+                            Button("新人登录") {
                                 
                                 self.isShowingCarousel = true
                             }.frame(width: 300, height: 44)
