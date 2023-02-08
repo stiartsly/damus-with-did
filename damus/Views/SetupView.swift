@@ -40,12 +40,18 @@ struct SetupView: View {
     @State var scanresult: String = ""
     @State private var isShowingCarousel = false
     @Environment(\.safeAreaInsets) private var safeAreaInsets
+    @State private var isShowing: Bool = Bool()
+    @State private var selectedIndex: Int = 0
 
+    
     func handleScan(result: Result<ScanResult, ScanError>) {
         isShowingScanner = false
         
         switch result {
         case .success(let result):
+            
+            self.state = .login
+            
             print(result.string)
             self.scanresult = result.string
         case .failure(let error):
@@ -58,116 +64,159 @@ struct SetupView: View {
             ZStack {
                 DamusGradient()
                 
-                ZStack() {
+                CustomView(isShowing: isShowing, content: {
                     
-                    VStack(alignment: .center) {
-                        NavigationLink(destination: EULAView(state: state), tag: .create_account, selection: $state ) {
-                            EmptyView()
-                        }
-                        NavigationLink(destination: EULAView(state: state), tag: .login, selection: $state ) {
-                            EmptyView()
-                        }
+                    ZStack() {
                         
-                        Image("Feeds-logo-signin")
-                            .resizable()
-                            .frame(width: 200, height: 133.3, alignment: .center)
-                            .padding([.top], 80.0)
-                        
-                        Text("Web3 社交网络").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 40, leading: 0, bottom: 0, trailing: 0))
-
-                        
-                        Spacer()
-                        
-                        VStack(spacing: 1) {
-                            Text("登录").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
-                            Text("请选择应用登录方式").foregroundColor(.white).bold().font(.system(size: 15)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
-                            Button("导入Elastos DID") {
-                                
-                                self.isShowingScanner = true
-                            }.frame(width: 300, height: 44)
-                                .cornerRadius(22)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                                }.background(
-                                    LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
-                                ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                        VStack(alignment: .center) {
+                            NavigationLink(destination: EULAView(state: state), tag: .create_account, selection: $state ) {
+                                EmptyView()
+                            }
+                            NavigationLink(destination: LoginView(scanResult: scanresult, publicKey: "11111", privateKey: "22222", did: "333333"), tag: .login, selection: $state ) {
+                                EmptyView()
+                            }
                             
-                            Button("新人登录") {
-                                
-                                self.isShowingCarousel = true
-                            }.frame(width: 300, height: 44)
-                                .cornerRadius(22)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                                }.background(
-                                    LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
-                                ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            Image("Feeds-logo-signin")
+                                .resizable()
+                                .frame(width: 200, height: 133.3, alignment: .center)
+                                .padding([.top], 80.0)
                             
-                            Button("了解更多") {
-                                self.isShowingCarousel = true
-                                
-                            }.frame(width: 300, height: 44)
-                                .cornerRadius(22)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                                }.background(
-                                    LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
-                                ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            Text("Web3 社交网络").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 40, leading: 0, bottom: 0, trailing: 0))
                             
                             
-                            HStack(spacing: 0) {
-                                Text("登录表明你同意我们的").font(.system(size: 10)).foregroundColor(.white)
-                                Button("条款") {
-                                    
-                                }.font(.system(size: 10)).foregroundColor(.blue)
-                                Text("、").font(.system(size: 10)).foregroundColor(.white)
-                                Button("隐私政策") {
-                                    
-                                }.font(.system(size: 10)).foregroundColor(.blue)
-                            }.padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                            
                             
                             Spacer()
                             
-                        }.frame(width: UIScreen.main.bounds.size.width, height: 400)
-                            .background(Color(hex: "161C24"))
-                            .cornerRadius(20)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 20).stroke(.blue, lineWidth: 1)
-                            }
-                        
-                    }
-
-                    VStack {
-                        Spacer()
-                        ZStack {
-                            CarouselView().frame(height: 450).background(Color(hex: "161C24")).padding(EdgeInsets(top: 0, leading: 0, bottom: safeAreaInsets.bottom + 50, trailing: 0))
-                            
-                            VStack {
+                            VStack(spacing: 1) {
+                                Text("登录").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                                Text("请选择应用登录方式").foregroundColor(.white).bold().font(.system(size: 15)).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                                Button("导入Elastos DID") {
+                                    
+                                    self.isShowingScanner = true
+                                }.frame(width: 300, height: 44)
+                                    .cornerRadius(22)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                    }.background(
+                                        LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                                    ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                                
+                                Button("新人登录") {
+                                    self.isShowing = true
+                                }.frame(width: 300, height: 44)
+                                    .cornerRadius(22)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                    }.background(
+                                        LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                                    ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                                
+                                Button("了解更多") {
+                                    self.isShowingCarousel = true
+                                    
+                                }.frame(width: 300, height: 44)
+                                    .cornerRadius(22)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                    }.background(
+                                        LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                                    ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                                
+                                
+                                HStack(spacing: 0) {
+                                    Text("登录表明你同意我们的").font(.system(size: 10)).foregroundColor(.white)
+                                    Button("条款") {
+                                        
+                                    }.font(.system(size: 10)).foregroundColor(.blue)
+                                    Text("、").font(.system(size: 10)).foregroundColor(.white)
+                                    Button("隐私政策") {
+                                        
+                                    }.font(.system(size: 10)).foregroundColor(.blue)
+                                }.padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0))
+                                
                                 Spacer()
-                                Button("隐私政策") {
-                                    self.isShowingCarousel = false
-                                }.font(.system(size: 20)).foregroundColor(.white).frame(height: 50)
-                            }.padding(EdgeInsets(top: 0, leading: 0, bottom: safeAreaInsets.bottom, trailing: 0))
+                                
+                            }.frame(width: UIScreen.main.bounds.size.width, height: 400)
+                                .background(Color(hex: "161C24"))
+                                .cornerRadius(20)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 20).stroke(.blue, lineWidth: 1)
+                                }
                             
-                        }.frame(height: 500)
-                    }.opacity(self.isShowingCarousel ? 1 : 0)
+                        }
+                        
+                        VStack {
+                            Spacer()
+                            ZStack {
+                                CarouselView().frame(height: 450).background(Color(hex: "161C24")).padding(EdgeInsets(top: 0, leading: 0, bottom: safeAreaInsets.bottom + 50, trailing: 0))
+                                
+                                VStack {
+                                    Spacer()
+                                    Button("隐私政策") {
+                                        self.isShowingCarousel = false
+                                    }.font(.system(size: 20)).foregroundColor(.white).frame(height: 50)
+                                }.padding(EdgeInsets(top: 0, leading: 0, bottom: safeAreaInsets.bottom, trailing: 0))
+                                
+                            }.frame(height: 500)
+                        }.opacity(self.isShowingCarousel ? 1 : 0)
+                        
+                        
+                        
+                    }.sheet(isPresented: $isShowingScanner) {
+                        CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: handleScan)
+                    }.edgesIgnoringSafeArea(.bottom)
                     
                     
-                }.sheet(isPresented: $isShowingScanner) {
-                    CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: handleScan)
-                }.edgesIgnoringSafeArea(.bottom)
-                
-                
+                }, isShowingContent: {
+                    
+                    VStack {
+
+                        HStack {
+                            Spacer()
+                            Button("关闭") {
+                                self.isShowing = false
+                            }.frame(width: 44, height: 44)
+                                .cornerRadius(22)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                }
+                        }.frame(height: 44)
+
+                        CarouselNewView(selectedIndex: $selectedIndex)
+                            .frame(width: 350, height: 450).allowsHitTesting(false)
+                        Button("下一个") {
+                            if (self.selectedIndex == 3) {
+                                self.selectedIndex = 0
+                                self.isShowing = false
+                            } else {
+                                self.selectedIndex = self.selectedIndex + 1
+
+                            }
+                            print("\(self.selectedIndex)")
+                        }.frame(width: 300, height: 44)
+                            .cornerRadius(22)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                            }.background(
+                                LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                            ).foregroundColor(.white)
+                        
+                    }.frame(width: 350, height: 550 + 44)
+                        .background(Color(hex: "161C24"))
+                        .cornerRadius(20)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20).stroke(.blue, lineWidth: 1)
+                        }
+                })
             }
-            
-            
-            
-            
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }
+
+
 
 private struct SafeAreaInsetsKey: EnvironmentKey {
     static var defaultValue: EdgeInsets {
@@ -243,3 +292,21 @@ struct SetupView_Previews: PreviewProvider {
     }
 }
 
+struct CustomView<Content: View, IsShowingContent: View>: View {
+    
+    let isShowing: Bool
+    @ViewBuilder let content: () -> Content
+    @ViewBuilder let isShowingContent: () -> IsShowingContent
+    
+    var body: some View {
+        
+        Group {
+            
+            if isShowing { ZStack { content().blur(radius: isShowing ? 5.0 : 0.0); isShowingContent() } }
+            else { content() }
+            
+        }
+        .animation(.default, value: isShowing)
+        
+    }
+}
