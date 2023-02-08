@@ -25,16 +25,37 @@ let carousel_items = [
 ]
 
 struct CarouselView: View {
+        
     var body: some View {
-        TabView {
+        
+        TabView() {
             ForEach(carousel_items) { item in
                 CarouselItemView(item: item)
                     .tabItem {
                         Text(item.id)
                     }
             }
-        }
-        .tabViewStyle(PageTabViewStyle())
+        }.tabViewStyle(PageTabViewStyle())
+
+    }
+}
+
+struct CarouselNewView: View {
+    
+    @Binding var selectedIndex: Int
+    
+    var body: some View {
+        
+        TabView(selection: $selectedIndex) {
+            ForEach(0..<carousel_items.count) { i in
+                CarouselItemView(item: carousel_items[i])
+                    .tabItem {
+                        Text(carousel_items[i].id)
+                    }.tag(i)
+            }
+        }.tabViewStyle(PageTabViewStyle())
+            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+
     }
 }
 
