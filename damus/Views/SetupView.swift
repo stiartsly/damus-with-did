@@ -41,6 +41,10 @@ struct SetupView: View {
     @State private var isShowingCarousel = false
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @State private var isShowing: Bool = Bool()
+    @State private var isShowingB: Bool = Bool()
+    @State private var isShowingC: Bool = Bool()
+    @State private var textfieldText: String = ""
+
     @State private var selectedIndex: Int = 0
 
     
@@ -64,7 +68,7 @@ struct SetupView: View {
             ZStack {
                 DamusGradient()
                 
-                CustomView(isShowing: isShowing, content: {
+                POPRootView(isShowingPOPA: isShowing, isShowingPOPB: isShowingB, isShowingPOPC: isShowingC) {
                     
                     ZStack() {
                         
@@ -167,8 +171,7 @@ struct SetupView: View {
                         CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: handleScan)
                     }.edgesIgnoringSafeArea(.bottom)
                     
-                    
-                }, isShowingContent: {
+                } POPAContent: {
                     
                     VStack {
 
@@ -186,9 +189,10 @@ struct SetupView: View {
                         CarouselNewView(selectedIndex: $selectedIndex)
                             .frame(width: 350, height: 450).allowsHitTesting(false)
                         Button("下一个") {
-                            if (self.selectedIndex == 3) {
+                            if (self.selectedIndex == 2) {
                                 self.selectedIndex = 0
                                 self.isShowing = false
+                                self.isShowingB = true
                             } else {
                                 self.selectedIndex = self.selectedIndex + 1
 
@@ -203,12 +207,101 @@ struct SetupView: View {
                             ).foregroundColor(.white)
                         
                     }.frame(width: 350, height: 550 + 44)
-                        .background(Color(hex: "161C24"))
+                        .background(Color(hex: "161C24"))// 161C24  background(.white)
                         .cornerRadius(20)
                         .overlay {
                             RoundedRectangle(cornerRadius: 20).stroke(.blue, lineWidth: 1)
                         }
-                })
+                    
+                } POPBContent: {
+                    
+                    VStack {
+
+                        HStack {
+                            Spacer()
+                            Button("关闭") {
+                                self.isShowing = false
+                            }.frame(width: 44, height: 44)
+                                .cornerRadius(22)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                }
+                        }.frame(height: 44)
+                        
+                        HStack {
+                            TextField("输入名称", text: $textfieldText).frame(height: 50).background(.white)
+                        }.padding(20)
+                        Button("下一个") {
+                            self.isShowingB = false
+                            self.isShowingC = true
+                        }.frame(width: 300, height: 44)
+                            .cornerRadius(22)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                            }.background(
+                                LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                            ).foregroundColor(.white)
+                        
+                    }.frame(width: 350, height: 300)
+                        .background(Color(hex: "161C24"))// 161C24  background(.white)
+                        .cornerRadius(20)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20).stroke(.blue, lineWidth: 1)
+                        }
+                    
+                    
+                    
+                } POPCContent: {
+                    
+
+                    
+                    VStack {
+                        HStack {
+                            Spacer()
+                            Button("关闭") {
+                                self.isShowingC = false
+                            }.frame(width: 44, height: 44)
+                                .cornerRadius(22)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                }
+                        }.frame(height: 44)
+                        HStack {
+                            VStack {
+                                Text("22222").font(.system(size: 25))
+                                Text("33333").font(.system(size: 15))
+                            }.frame(width: 150)
+                            Image(systemName: "touchid")
+                        }.padding(10).cornerRadius(22)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                            }.background(.red)
+                        Image(systemName: "touchid").padding(10)
+                        HStack {
+                            VStack {
+                                Text("22222").font(.system(size: 25))
+                                Text("33333").font(.system(size: 15))
+                            }.frame(width: 400)
+                            Image(systemName: "touchid")
+                        }.padding(10).cornerRadius(22)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                            }.background(.red)
+                        Image(systemName: "touchid").padding(10)
+                        HStack {
+                            VStack {
+                                Text("22222").font(.system(size: 25))
+                                Text("33333").font(.system(size: 15))
+                            }.frame(width: 150)
+                            Image(systemName: "touchid")
+                        }.padding(10).cornerRadius(22)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                            }.background(.red)
+
+                    }.frame(width: 400, height: 500).background(.white)
+                }
+
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -292,21 +385,34 @@ struct SetupView_Previews: PreviewProvider {
     }
 }
 
-struct CustomView<Content: View, IsShowingContent: View>: View {
+struct POPRootView<Content: View, contentA: View, contentB: View, contentC: View>: View {
     
-    let isShowing: Bool
+    let isShowingPOPA: Bool
+    let isShowingPOPB: Bool
+    let isShowingPOPC: Bool
+
     @ViewBuilder let content: () -> Content
-    @ViewBuilder let isShowingContent: () -> IsShowingContent
-    
+    @ViewBuilder let POPAContent: () -> contentA
+    @ViewBuilder let POPBContent: () -> contentB
+    @ViewBuilder let POPCContent: () -> contentC
+
     var body: some View {
         
         Group {
             
-            if isShowing { ZStack { content().blur(radius: isShowing ? 5.0 : 0.0); isShowingContent() } }
+            if isShowingPOPA {
+                ZStack { content().blur(radius: isShowingPOPA ? 5.0 : 0.0); POPAContent() }
+            }
+            else if isShowingPOPB {
+                ZStack { content().blur(radius: isShowingPOPB ? 5.0 : 0.0); POPBContent() }
+            }
+            else if isShowingPOPC {
+                ZStack { content().blur(radius: isShowingPOPC ? 5.0 : 0.0); POPCContent() }
+            }
             else { content() }
             
         }
-        .animation(.default, value: isShowing)
+        .animation(.default, value: isShowingPOPA)
         
     }
 }
