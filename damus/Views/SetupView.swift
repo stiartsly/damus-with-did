@@ -7,7 +7,36 @@
 
 import SwiftUI
 import CodeScanner
+import ElastosDIDSDK
 
+extension String {
+    
+    /*
+     * example: /foo/bar/example.txt
+     * dirNamePart() -> "/foo/bar/"
+     */
+    func dirname() -> String {
+        let index = self.range(of: "/", options: .backwards)?.lowerBound
+        let str = index.map(self.prefix(upTo:)) ?? ""
+        return "\(str)/"
+    }
+    
+    func toDictionary() -> [String : Any] {
+        
+        var result = [String : Any]()
+        guard !self.isEmpty else { return result }
+        
+        guard let dataSelf = self.data(using: .utf8) else {
+            return result
+        }
+        
+        if let dic = try? JSONSerialization.jsonObject(with: dataSelf,
+                           options: []) as? [String : Any] {
+            result = dic ?? [: ]
+        }
+        return result
+    }
+}
 func hex_col(r: UInt8, g: UInt8, b: UInt8) -> Color {
     return Color(.sRGB,
                  red: Double(r) / Double(0xff),
@@ -46,6 +75,13 @@ struct SetupView: View {
     @State private var textfieldText: String = ""
 
     @State private var selectedIndex: Int = 0
+    
+    //新增
+    @State private var userDIDStorePass: String = ""
+    @State private var rootIdentity: RootIdentity?
+    @State private var pk: String = ""
+    @State private var sk: String = ""
+    @State private var didString: String = ""
 
     
     func handleScan(result: Result<ScanResult, ScanError>) {
@@ -56,12 +92,105 @@ struct SetupView: View {
             
             self.state = .login
             
-            print(result.string)
+            print("result.string = \(result.string)")
             self.scanresult = result.string
+            self.handleDidPkSk(mnemonic: result.string)
         case .failure(let error):
             print("Scanning failed: \(error.localizedDescription)")
         }
     }
+    
+    func handleDidPkSk(mnemonic: String) {
+        do {
+            let root: String = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore"
+            
+            let didStore = try DIDStore.open(atPath: root)
+            print("root = \(root)")
+            
+            let currentNet = "mainnet"
+            if (!DIDBackend.isInitialized()) {
+                try DIDBackend.initialize(DefaultDIDAdapter(currentNet))
+            }
+            print("DIDBackend.initialize")
+            
+            // Generate a random password
+            self.userDIDStorePass = ""
+            if try !(didStore.containsRootIdentities()) {
+                self.rootIdentity = try RootIdentity.create(mnemonic, false, didStore, self.userDIDStorePass)
+            }
+            print("rootIdentity = \(self.rootIdentity)")
+            let dids = try didStore.listDids()
+            
+            if dids.count > 0 {
+                self.didString = dids[0].description
+            }
+//            let id = try didStore.loadRootIdentity()!.getId()
+//
+//            let root1: String = "\(NSHomeDirectory())/Library/Caches/DamusKeys"
+//            let tempDir: String = "\(root1)/tempDir"
+//            let exportFile = tempDir + "/idexport.json"
+//            self.deleteFile(exportFile)
+//            try create(exportFile, forWrite: true)
+//            let fileHndle: FileHandle = FileHandle(forWritingAtPath: exportFile)!
+//
+//            try didStore.exportRootIdentity(id, to: fileHndle, using: "", storePassword: userDIDStorePass)
+//            let readerHndle = FileHandle(forReadingAtPath: exportFile)
+//            let data = try readerHndle?.readDataToEndOfFile()
+//            let stringData = String(data: data!, encoding: .utf8)
+//            print("stringData = \(stringData)")
+            
+//            let m = "jayuhyO2FLd5w8nO0Phk2OiJpQmA2y0_ZGzFvvMj2kbMth54sOR1iSBRrEac8pGf"
+//            let p = "xpub6CmeARucy5ZRTYtWbQTvfbMWZNDsVQSYeyBe8d6b7vRzGZ8gPr1yPXSbwWtrDrvwx4WGNUycEBz91PXfJhYLZsZbvuFENinKcsK9yCwUJLZ"
+//            let s = "75NZt_rxw19YvXR7GWACh9f_k24u3rh6gQNcQrQ_wzsP7qMcFP2GTjpHMI7LAd9FpCq3bWIAHQbqGcCqchUjSmnbUqEUSvlY4ETPDWpKugWeHIqWDG5z965j8LfhqK9x"
+            
+//            let dic = String(data: data!, encoding: .utf8)?.toDictionary()
+//            let re = try RootIdentityExport.deserialize(dic!)
+//            let p = re.publicKey
+//            print("p = \(p)")
+//            
+//            let s = try re.getPrivateKey("", "")
+//            print("s = \(s)")
+            
+        } catch {
+            print("carsh : \(error)")
+        }
+    }
+    
+    func create(_ path: String, forWrite: Bool) throws {
+        if !FileManager.default.fileExists(atPath: path) && forWrite {
+            let dirPath: String = path.dirname()
+            let fileM = FileManager.default
+            let re = fileM.fileExists(atPath: dirPath)
+            print("dirPath = \(dirPath)")
+            print("path = \(path)")
+
+            if !re {
+                try fileM.createDirectory(atPath: dirPath, withIntermediateDirectories: true, attributes: nil)
+            }
+            FileManager.default.createFile(atPath: path, contents: nil, attributes: nil)
+        }
+    }
+    
+    func deleteFile(_ path: String) {
+         do {
+             let filemanager: FileManager = FileManager.default
+             var isdir = ObjCBool.init(false)
+             let fileExists = filemanager.fileExists(atPath: path, isDirectory: &isdir)
+             if fileExists && isdir.boolValue {
+                 if let dircontents = filemanager.enumerator(atPath: path) {
+                     for case let url as URL in dircontents {
+                         deleteFile(url.absoluteString)
+                     }
+                 }
+             }
+             guard fileExists else {
+                 return
+             }
+             try filemanager.removeItem(atPath: path)
+         } catch {
+             print("deleteFile error: \(error)")
+         }
+     }
     
     var body: some View {
         NavigationView {
@@ -76,7 +205,8 @@ struct SetupView: View {
                             NavigationLink(destination: EULAView(state: state), tag: .create_account, selection: $state ) {
                                 EmptyView()
                             }
-                            NavigationLink(destination: LoginView(scanResult: scanresult, publicKey: "11111", privateKey: "22222", did: "333333"), tag: .login, selection: $state ) {
+                            
+                            NavigationLink(destination: LoginView(scanResult: scanresult, publicKey: pk, privateKey: sk, did: didString), tag: .login, selection: $state ) {
                                 EmptyView()
                             }
                             
