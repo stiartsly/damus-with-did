@@ -125,11 +125,12 @@ struct LoginView: View {
     var body: some View {
         ZStack(alignment: .top) {
             DamusGradient()
-            VStack {
+            VStack(alignment: .leading) {
                 Text("Login", comment: "Title of view to log into an account.")
                     .foregroundColor(.white)
                     .font(.title)
                     .padding()
+                    .frame(maxWidth: .infinity,alignment: .center)
 
                 Text("Enter your account key to login:", comment: "Prompt for user to enter an account key to login.")
                     .foregroundColor(.white)
