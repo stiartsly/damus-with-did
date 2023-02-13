@@ -33,6 +33,39 @@ enum ParsedKey {
     }
 }
 
+enum LogInStatus {
+    case unKnow
+    case notNetWork
+    case retry
+    case login
+    
+    var title: String {
+        switch self {
+        case .unKnow:
+            return NSLocalizedString("正在解析助记词", comment: "")
+        case .notNetWork:
+            return NSLocalizedString("Login", comment: "Button to log into account.")
+        case .retry:
+            return NSLocalizedString("登录中，请稍后", comment: "正在解析助记词")
+        case .login:
+            return NSLocalizedString("开始使用", comment: "进入首页")
+        }
+    }
+    
+    var disabled: Bool {
+        switch self {
+        case .unKnow:
+            return true
+        case .notNetWork:
+            return false
+        case .retry:
+            return true
+        case .login:
+            return false
+        }
+    }
+}
+
 struct LoginView: View {
     @State var key: String = ""
     @State var is_pubkey: Bool = false
@@ -40,14 +73,9 @@ struct LoginView: View {
     @State var mnemonic: String = ""
     @State var publicKey: String = ""
     @State var privateKey: String = ""
-    @State public var rootIdentity: RootIdentity?
     @State public var didString: String = ""
-    @State public var rootPath: String = ""
-    @State private var defaultStorePass: String = "DUMASDIDPASSWORD"
-
-//    @State var did: String = ""
-//    @State var rootPath: String = ""
-
+    @State private var logInStatus: LogInStatus = .login
+    @State var buttonTitle: String = ""
 
     func get_error(parsed_key: ParsedKey?) -> String? {
         if self.error != nil {
@@ -138,75 +166,120 @@ struct LoginView: View {
                     .font(.title)
                     .padding()
                     .frame(maxWidth: .infinity,alignment: .center)
-
-                Text("Enter your account key to login:", comment: "Prompt for user to enter an account key to login.")
-                    .foregroundColor(.white)
-                    .padding()
-                                
                 
-//                Text("\(self.scanResult)")
-//                    .foregroundColor(.white)
-//                    .padding()
-               
-//                Text("Public Key: \(self.publicKey)")
-//                    .foregroundColor(.white)
-//                    .padding()
-//
-//                Text("Private Key: \(self.privateKey)")
-//                    .foregroundColor(.white)
-//                    .padding()
-//
+                //                Text("Enter your account key to login:", comment: "Prompt for user to enter an account key to login.")
+                //                    .foregroundColor(.white)
+                //                    .padding()
+                
+                
+                //                Text("\(self.scanResult)")
+                //                    .foregroundColor(.white)
+                //                    .padding()
+                
+                //                Text("Public Key: \(self.publicKey)")
+                //                    .foregroundColor(.white)
+                //                    .padding()
+                //
+                //                Text("Private Key: \(self.privateKey)")
+                //                    .foregroundColor(.white)
+                //                    .padding()
+                //
                 Text("DID: \(self.didString)")
                     .foregroundColor(.white)
-                    .padding()
-
-                DamusWhiteButton(NSLocalizedString("Login", comment: "Button to log into account."), action: {
-                    print("DODO 登录 mnemonic = \(mnemonic)")
-                    let di = DamusIdentity.shared()
-                    di.handleDidPkSk(mnemonic: mnemonic)
-
-                    if di.save_did() {
-                        notify(.login, ())
+                    .padding().onAppear {
+                        parsedDID()
                     }
-                }).frame(maxWidth: .infinity,alignment: .center)
                 
-//                KeyInput(NSLocalizedString("nsec1...", comment: "Prompt for user to enter in an account key to login. This text shows the characters the key could start with if it was a private key."), key: $scanResult)
+                DamusWhiteButton(self.buttonTitle, self.logInStatus.disabled, action: {
+                    print("DODO1 登录 mnemonic = \(mnemonic)")
+                    checkLogin()
+                }).frame(maxWidth: .infinity,alignment: .center).buttonStyle(.plain)
                 
-//                let parsed = parse_key(key)
-//
-//                if parsed?.is_hex ?? false {
-//                    Text("This is an old-style nostr key. We're not sure if it's a pubkey or private key. Please toggle the button below if this a public key.", comment: "Warning that the inputted account key for login is an old-style and asking user to verify if it is a public key.")
-//                        .font(.subheadline.bold())
-//                        .foregroundColor(.white)
-//                    PubkeySwitch(isOn: $is_pubkey)
-//                        .padding()
-//                }
-//
-//                if let error = get_error(parsed_key: parsed) {
-//                    Text(error)
-//                        .foregroundColor(.red)
-//                        .padding()
-//                }
-//
-//                if parsed?.is_pub ?? false {
-//                    Text("This is a public key, you will not be able to make posts or interact in any way. This is used for viewing accounts from their perspective.", comment: "Warning that the inputted account key is a public key and the result of what happens because of it.")
-//                        .foregroundColor(.white)
-//                        .padding()
-//                }
-//
-//                if let p = parsed {
-//                    DamusWhiteButton(NSLocalizedString("Login", comment: "Button to log into account.")) {
-//                        if !process_login(p, is_pubkey: self.is_pubkey) {
-//                            self.error = NSLocalizedString("Invalid key", comment: "Error message indicating that an invalid account key was entered for login.")
-//                        }
-//                    }
-//                }
+                //                KeyInput(NSLocalizedString("nsec1...", comment: "Prompt for user to enter in an account key to login. This text shows the characters the key could start with if it was a private key."), key: $scanResult)
+                
+                //                let parsed = parse_key(key)
+                //
+                //                if parsed?.is_hex ?? false {
+                //                    Text("This is an old-style nostr key. We're not sure if it's a pubkey or private key. Please toggle the button below if this a public key.", comment: "Warning that the inputted account key for login is an old-style and asking user to verify if it is a public key.")
+                //                        .font(.subheadline.bold())
+                //                        .foregroundColor(.white)
+                //                    PubkeySwitch(isOn: $is_pubkey)
+                //                        .padding()
+                //                }
+                //
+                //                if let error = get_error(parsed_key: parsed) {
+                //                    Text(error)
+                //                        .foregroundColor(.red)
+                //                        .padding()
+                //                }
+                //
+                //                if parsed?.is_pub ?? false {
+                //                    Text("This is a public key, you will not be able to make posts or interact in any way. This is used for viewing accounts from their perspective.", comment: "Warning that the inputted account key is a public key and the result of what happens because of it.")
+                //                        .foregroundColor(.white)
+                //                        .padding()
+                //                }
+                //
+                //                if let p = parsed {
+                //                    DamusWhiteButton(NSLocalizedString("Login", comment: "Button to log into account.")) {
+                //                        if !process_login(p, is_pubkey: self.is_pubkey) {
+                //                            self.error = NSLocalizedString("Invalid key", comment: "Error message indicating that an invalid account key was entered for login.")
+                //                        }
+                //                    }
+                //                }
                 
             }
             .padding()
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: BackNav())
+    }
+    
+    func parsedDID() {
+        _ = checkLoginStatus()
+        DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1), execute: {
+            print("Thread = ", Thread.current)
+            self.logInStatus = .retry
+            self.buttonTitle = logInStatus.title
+            let di = DamusIdentity.shared()
+            didString = di.handleDidPkSk(mnemonic: mnemonic)
+            _ = checkLoginStatus()
+        })
+    }
+    
+    func checkLoginStatus() -> LogInStatus {
+        let contains = "did:elastos:"
+        if self.didString == "" {
+            self.logInStatus = .unKnow
+            self.buttonTitle = self.logInStatus.title
+        }
+       else if self.didString.contains(notNetWorkError) {
+            self.logInStatus = .notNetWork
+            self.buttonTitle = self.logInStatus.title
+        }
+        else if self.didString.contains(contains) {
+            self.logInStatus = .login
+            self.buttonTitle = self.logInStatus.title
+        }
+        
+        return logInStatus
+    }
+    
+    func checkLogin() {
+        if (checkLoginStatus() == .login) {
+            login()
+            return
+        }
+
+        parsedDID()
+        self.logInStatus = .retry
+        self.buttonTitle = logInStatus.title
+        print("DODO2 登录 mnemonic = \(mnemonic)")
+    }
+    
+    func login() {
+        let di = DamusIdentity.shared()
+        _ = di.save_did()
+        notify(.login, ())
     }
 }
 
