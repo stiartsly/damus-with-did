@@ -247,7 +247,7 @@ Number of profiles a user is following. */
 "Encrypted" = "已加密";
 
 /* Prompt for user to enter an account key to login. */
-"Enter your account key to login:" = "输入您的账户key以登陆：";
+"Enter your account key to login:" = "正在解析您的账户key以登陆：请稍后";
 
 /* Error message indicating why saving keys failed. */
 "Error: %@" = "错误：%@";

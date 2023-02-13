@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1122C52A29911A0A00324042 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 1122C52929911A0A00324042 /* CodeScanner */; };
+		115B168C299A36FD007D0B78 /* DamusIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115B168B299A36FD007D0B78 /* DamusIdentity.swift */; };
 		11CB6F4E2993CA4D00DED1FE /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB6F4D2993CA4D00DED1FE /* WelcomeView.swift */; };
 		3165648B295B70D500C64604 /* LinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3165648A295B70D500C64604 /* LinkView.swift */; };
 		3169CAE6294E69C000EE4006 /* EmptyTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3169CAE5294E69C000EE4006 /* EmptyTimelineView.swift */; };
@@ -228,6 +229,7 @@
 
 /* Begin PBXFileReference section */
 		05D9CC8FDFCDABC3E9A25670 /* Pods-damusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damusTests.debug.xcconfig"; path = "Target Support Files/Pods-damusTests/Pods-damusTests.debug.xcconfig"; sourceTree = "<group>"; };
+		115B168B299A36FD007D0B78 /* DamusIdentity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DamusIdentity.swift; sourceTree = "<group>"; };
 		11CB6F4D2993CA4D00DED1FE /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		12E8596092C4E23EE37B5FB8 /* Pods_damusTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_damusTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		196AB1474B2C830619197E43 /* Pods-damusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damusTests.release.xcconfig"; path = "Target Support Files/Pods-damusTests/Pods-damusTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -752,6 +754,7 @@
 				4C363AA728297703006E126D /* InsertSort.swift */,
 				4C477C9D282C3A4800033AA3 /* TipCounter.swift */,
 				4C285C8B28398BC6008A31F1 /* Keys.swift */,
+				115B168B299A36FD007D0B78 /* DamusIdentity.swift */,
 				4C90BD19283AA67F008EE7EF /* Bech32.swift */,
 				4C216F352870A9A700040376 /* InputDismissKeyboard.swift */,
 				3169CAEC294FCCFC00EE4006 /* Constants.swift */,
@@ -1391,6 +1394,7 @@
 				4C0A3F97280F8E02000448DE /* ThreadView.swift in Sources */,
 				4C06670B28FDE64700038D2A /* damus.c in Sources */,
 				4FE60CDD295E1C5E00105A1F /* Wallet.swift in Sources */,
+				115B168C299A36FD007D0B78 /* DamusIdentity.swift in Sources */,
 				3AA247FF297E3D900090C62D /* RepostsView.swift in Sources */,
 				3AE45AF6297BB2E700C1D842 /* LibreTranslateServer.swift in Sources */,
 				4C99737B28C92A9200E53835 /* ChatroomMetadata.swift in Sources */,

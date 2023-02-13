@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ElastosDIDSDK
 
 enum ParsedKey {
     case pub(String)
@@ -36,11 +37,17 @@ struct LoginView: View {
     @State var key: String = ""
     @State var is_pubkey: Bool = false
     @State var error: String? = nil
-    @State var scanResult: String = ""
+    @State var mnemonic: String = ""
     @State var publicKey: String = ""
     @State var privateKey: String = ""
-    @State var did: String = ""
-    @State var rootPath: String = ""
+    @State public var rootIdentity: RootIdentity?
+    @State public var didString: String = ""
+    @State public var rootPath: String = ""
+    @State private var defaultStorePass: String = "DUMASDIDPASSWORD"
+
+//    @State var did: String = ""
+//    @State var rootPath: String = ""
+
 
     func get_error(parsed_key: ParsedKey?) -> String? {
         if self.error != nil {
@@ -122,7 +129,6 @@ struct LoginView: View {
         return true
     }
     
-    
     var body: some View {
         ZStack(alignment: .top) {
             DamusGradient()
@@ -150,22 +156,18 @@ struct LoginView: View {
 //                    .foregroundColor(.white)
 //                    .padding()
 //
-                Text("DID: \(self.did)")
+                Text("DID: \(self.didString)")
                     .foregroundColor(.white)
                     .padding()
 
                 DamusWhiteButton(NSLocalizedString("Login", comment: "Button to log into account."), action: {
-                    print("DODO 登录")
-                    
-                    let defaults = UserDefaults.standard
-                    print("loginView did = \(did)")
-                    if did == "" {
-                        return
+                    print("DODO 登录 mnemonic = \(mnemonic)")
+                    let di = DamusIdentity.shared()
+                    di.handleDidPkSk(mnemonic: mnemonic)
+
+                    if di.save_did() {
+                        notify(.login, ())
                     }
-                    defaults.setValue(did, forKey: defaultsKeys.currentUserDid)
-                    defaults.setValue(rootPath, forKey: defaultsKeys.currentUserPath)
-                    
-                    notify(.login, ())
                 }).frame(maxWidth: .infinity,alignment: .center)
                 
 //                KeyInput(NSLocalizedString("nsec1...", comment: "Prompt for user to enter in an account key to login. This text shows the characters the key could start with if it was a private key."), key: $scanResult)
@@ -207,6 +209,7 @@ struct LoginView: View {
         .navigationBarItems(leading: BackNav())
     }
 }
+
 
 struct PubkeySwitch: View {
     @Binding var isOn: Bool
