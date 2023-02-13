@@ -40,6 +40,7 @@ struct LoginView: View {
     @State var publicKey: String = ""
     @State var privateKey: String = ""
     @State var did: String = ""
+    @State var rootPath: String = ""
 
     func get_error(parsed_key: ParsedKey?) -> String? {
         if self.error != nil {
@@ -137,22 +138,35 @@ struct LoginView: View {
                     .padding()
                                 
                 
-                Text("\(self.scanResult)")
-                    .foregroundColor(.white)
-                    .padding()
+//                Text("\(self.scanResult)")
+//                    .foregroundColor(.white)
+//                    .padding()
                
-                Text("Public Key: \(self.publicKey)")
-                    .foregroundColor(.white)
-                    .padding()
-                
-                Text("Private Key: \(self.privateKey)")
-                    .foregroundColor(.white)
-                    .padding()
-                
-                Text("DID:\(self.did)")
+//                Text("Public Key: \(self.publicKey)")
+//                    .foregroundColor(.white)
+//                    .padding()
+//
+//                Text("Private Key: \(self.privateKey)")
+//                    .foregroundColor(.white)
+//                    .padding()
+//
+                Text("DID: \(self.did)")
                     .foregroundColor(.white)
                     .padding()
 
+                DamusWhiteButton(NSLocalizedString("Login", comment: "Button to log into account."), action: {
+                    print("DODO 登录")
+                    
+                    let defaults = UserDefaults.standard
+                    print("loginView did = \(did)")
+                    if did == "" {
+                        return
+                    }
+                    defaults.setValue(did, forKey: defaultsKeys.currentUserDid)
+                    defaults.setValue(rootPath, forKey: defaultsKeys.currentUserPath)
+                    
+                    notify(.login, ())
+                }).frame(maxWidth: .infinity,alignment: .center)
                 
 //                KeyInput(NSLocalizedString("nsec1...", comment: "Prompt for user to enter in an account key to login. This text shows the characters the key could start with if it was a private key."), key: $scanResult)
                 
@@ -185,6 +199,7 @@ struct LoginView: View {
 //                        }
 //                    }
 //                }
+                
             }
             .padding()
         }

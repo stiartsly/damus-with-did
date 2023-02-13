@@ -60,12 +60,16 @@ enum FilterState : Int {
 struct ContentView: View {
     let keypair: Keypair
     
+    let currentUserDid: String?
+
     var pubkey: String {
-        return keypair.pubkey
+        return "npub13gylqvxmy7wqhxc8m4nu6d5kpxswvhlg233ftruvncsg8th36fmsgu7nvk"
+//        return keypair.pubkey
     }
     
     var privkey: String? {
-        return keypair.privkey
+        return "nsec1tkl594j5clqe0ugh0lcgw44sg9z47m562xyg0wtvw36ukz0es7dq0434t4"
+//        return keypair.privkey
     }
     
     @State var status: String = "Not connected"
@@ -574,7 +578,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(keypair: Keypair(pubkey: "3efdaebb1d8923ebd99c9e7ace3b4194ab45512e2be79c1b7d68d9243e0d2681", privkey: nil))
+        ContentView(keypair: Keypair(pubkey: "3efdaebb1d8923ebd99c9e7ace3b4194ab45512e2be79c1b7d68d9243e0d2681", privkey: nil), currentUserDid: nil)
     }
 }
 
