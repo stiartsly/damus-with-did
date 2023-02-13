@@ -109,7 +109,7 @@ struct SetupView: View {
                                 EmptyView()
                             }
                             
-                            NavigationLink(destination: LoginView(mnemonic: scanresult, publicKey: pk, privateKey: sk), tag: .login, selection: $state ) {
+                            NavigationLink(destination: LoginView(mnemonic: scanresult), tag: .login, selection: $state ) {
                                 EmptyView()
                             }
                             
@@ -391,7 +391,7 @@ extension Color {
     }
 }
 
-func DamusWhiteButton(_ title: String, action: @escaping () -> ()) -> some View {
+func DamusWhiteButton(_ title: String, _ bdisabled: Bool = false, action: @escaping () -> ()) -> some View {
     return Button(action: action) {
         Text(title)
             .frame(width: 300, height: 50)
@@ -403,7 +403,7 @@ func DamusWhiteButton(_ title: String, action: @escaping () -> ()) -> some View 
                     .stroke(Color.white, lineWidth: 2.0)
                     .background(Color.white.opacity(0.15))
             )
-    }
+    }.disabled(bdisabled)
     
 }
 

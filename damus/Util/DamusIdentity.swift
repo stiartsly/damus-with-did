@@ -7,7 +7,8 @@ struct defaultsKeys {
     static let currentUserPath = "CURRENT_USER_PATH"
 
 }
-
+let notApproveNetWork = "目前不允许数据连接。"
+let notNetWorkError = "无法连接网络：请点击登录重试"
 public class DamusIdentity {
     
     public var mnemonic: String = ""
@@ -25,7 +26,8 @@ public class DamusIdentity {
         
         return instance!
     }
-    public func handleDidPkSk(mnemonic: String) {
+    
+    public func handleDidPkSk(mnemonic: String) -> String {
         do {
             let currentPath = Int.random(in: 0...1000)
             rootPath = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore" + "\(currentPath)"
@@ -53,9 +55,14 @@ public class DamusIdentity {
             if dids.count > 0 {
                 self.didString = dids[0].description
             }
+            return self.didString
             // TODO: 判断本地是否有此did存储
         } catch {
-            print("carsh : \(error)")
+            print("carsh : \(error.localizedDescription)")
+            if error.localizedDescription == notApproveNetWork {
+                return notNetWorkError
+            }
+            return error.localizedDescription
         }
     }
     
