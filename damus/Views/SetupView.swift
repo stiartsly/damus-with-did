@@ -7,7 +7,7 @@
 
 import SwiftUI
 import CodeScanner
-import ElastosDIDSDK
+//import ElastosDIDSDK
 
 extension String {
     
@@ -63,12 +63,6 @@ struct DamusGradient: View {
     }
 }
 
-struct defaultsKeys {
-    static let currentUserDid = "CURRENT_USER_DID"
-    static let currentUserPath = "CURRENT_USER_PATH"
-
-}
-
 struct SetupView: View {
     @State var state: SetupState? = .home
     @State private var isShowingScanner = false
@@ -83,13 +77,8 @@ struct SetupView: View {
     @State private var selectedIndex: Int = 0
     
     //新增
-    @State private var defaultStorePass: String = "DUMASDIDPASSWORD"
     @State private var pk: String = ""
     @State private var sk: String = ""
-    @State public var rootIdentity: RootIdentity?
-    @State public var didString: String = ""
-    @State public var rootPath: String = ""
-
     
     func handleScan(result: Result<ScanResult, ScanError>) {
         isShowingScanner = false
@@ -101,82 +90,11 @@ struct SetupView: View {
             
             print("result.string = \(result.string)")
             self.scanresult = result.string
-            self.handleDidPkSk(mnemonic: result.string)
         case .failure(let error):
             print("Scanning failed: \(error.localizedDescription)")
         }
     }
-    
-    func handleDidPkSk(mnemonic: String) {
-        do {
-            let currentPath = Int.random(in: 0...1000)
-            rootPath = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore" + "\(currentPath)"
-            let didStore = try DIDStore.open(atPath: rootPath)
-            print("rootPath = \(rootPath)")
-            
-            let currentNet = "mainnet"
-            if (!DIDBackend.isInitialized()) {
-                try DIDBackend.initialize(DefaultDIDAdapter("https://api.elastos.io/eid"))
-            }
-            print("DIDBackend.initialize")
-            
-            // Generate a random password
-            if try !(didStore.containsRootIdentities()) {
-                self.rootIdentity = try RootIdentity.create(mnemonic, false, didStore, self.defaultStorePass)
-            }
-            self.rootIdentity = try didStore.loadRootIdentity()
-            print("rootIdentity = \(self.rootIdentity)")
 
-            try didStore.synchronize()
-            let dids = try didStore.listDids()
-            print("dids = ", dids)
-            
-            //TODO: 默认只取第一个did // 其他的did暂时不支持
-            if dids.count > 0 {
-                self.didString = dids[0].description
-            }
-            // TODO: 判断本地是否有此did存储
-        } catch {
-            print("carsh : \(error)")
-        }
-    }
-    
-    func create(_ path: String, forWrite: Bool) throws {
-        if !FileManager.default.fileExists(atPath: path) && forWrite {
-            let dirPath: String = path.dirname()
-            let fileM = FileManager.default
-            let re = fileM.fileExists(atPath: dirPath)
-            print("dirPath = \(dirPath)")
-            print("path = \(path)")
-
-            if !re {
-                try fileM.createDirectory(atPath: dirPath, withIntermediateDirectories: true, attributes: nil)
-            }
-            FileManager.default.createFile(atPath: path, contents: nil, attributes: nil)
-        }
-    }
-    
-    func deleteFile(_ path: String) {
-         do {
-             let filemanager: FileManager = FileManager.default
-             var isdir = ObjCBool.init(false)
-             let fileExists = filemanager.fileExists(atPath: path, isDirectory: &isdir)
-             if fileExists && isdir.boolValue {
-                 if let dircontents = filemanager.enumerator(atPath: path) {
-                     for case let url as URL in dircontents {
-                         deleteFile(url.absoluteString)
-                     }
-                 }
-             }
-             guard fileExists else {
-                 return
-             }
-             try filemanager.removeItem(atPath: path)
-         } catch {
-             print("deleteFile error: \(error)")
-         }
-     }
-    
     var body: some View {
         NavigationView {
             ZStack {
@@ -191,7 +109,7 @@ struct SetupView: View {
                                 EmptyView()
                             }
                             
-                            NavigationLink(destination: LoginView(scanResult: scanresult, publicKey: pk, privateKey: sk, did: didString, rootPath: rootPath), tag: .login, selection: $state ) {
+                            NavigationLink(destination: LoginView(mnemonic: scanresult, publicKey: pk, privateKey: sk), tag: .login, selection: $state ) {
                                 EmptyView()
                             }
                             
