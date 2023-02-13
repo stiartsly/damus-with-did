@@ -301,8 +301,8 @@ struct SetupView: View {
                         }.frame(height: 44)
                         HStack {
                             VStack {
-                                Text("22222").font(.system(size: 25))
-                                Text("33333").font(.system(size: 15))
+                                Text("创建身份").font(.system(size: 25))
+                                Text("向您的设备添加新身份").font(.system(size: 15))
                             }.frame(width: 150)
                             Image(systemName: "touchid")
                         }.padding(10).cornerRadius(22)
@@ -312,8 +312,8 @@ struct SetupView: View {
                         Image(systemName: "touchid").padding(10)
                         HStack {
                             VStack {
-                                Text("22222").font(.system(size: 25))
-                                Text("33333").font(.system(size: 15))
+                                Text("发布身份").font(.system(size: 25))
+                                Text("将身份记录到公开仓库上，此步骤大约15秒").font(.system(size: 15))
                             }.frame(width: 400)
                             Image(systemName: "touchid")
                         }.padding(10).cornerRadius(22)
@@ -321,16 +321,16 @@ struct SetupView: View {
                                 RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
                             }.background(.red)
                         Image(systemName: "touchid").padding(10)
-                        HStack {
-                            VStack {
-                                Text("22222").font(.system(size: 25))
-                                Text("33333").font(.system(size: 15))
-                            }.frame(width: 150)
-                            Image(systemName: "touchid")
-                        }.padding(10).cornerRadius(22)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                            }.background(.red)
+//                        HStack {
+//                            VStack {
+//                                Text("22222").font(.system(size: 25))
+//                                Text("33333").font(.system(size: 15))
+//                            }.frame(width: 150)
+//                            Image(systemName: "touchid")
+//                        }.padding(10).cornerRadius(22)
+//                            .overlay {
+//                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+//                            }.background(.red)
 
                     }.frame(width: 400, height: 500).background(.white)
                 }
