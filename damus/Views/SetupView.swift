@@ -63,6 +63,12 @@ struct DamusGradient: View {
     }
 }
 
+struct defaultsKeys {
+    static let currentUserDid = "CURRENT_USER_DID"
+    static let currentUserPath = "CURRENT_USER_PATH"
+
+}
+
 struct SetupView: View {
     @State var state: SetupState? = .home
     @State private var isShowingScanner = false
@@ -77,11 +83,12 @@ struct SetupView: View {
     @State private var selectedIndex: Int = 0
     
     //新增
-    @State private var userDIDStorePass: String = ""
-    @State private var rootIdentity: RootIdentity?
+    @State private var defaultStorePass: String = "DUMASDIDPASSWORD"
     @State private var pk: String = ""
     @State private var sk: String = ""
-    @State private var didString: String = ""
+    @State public var rootIdentity: RootIdentity?
+    @State public var didString: String = ""
+    @State public var rootPath: String = ""
 
     
     func handleScan(result: Result<ScanResult, ScanError>) {
@@ -102,55 +109,33 @@ struct SetupView: View {
     
     func handleDidPkSk(mnemonic: String) {
         do {
-            let root: String = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore"
-            
-            let didStore = try DIDStore.open(atPath: root)
-            print("root = \(root)")
+            let currentPath = Int.random(in: 0...1000)
+            rootPath = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore" + "\(currentPath)"
+            let didStore = try DIDStore.open(atPath: rootPath)
+            print("rootPath = \(rootPath)")
             
             let currentNet = "mainnet"
             if (!DIDBackend.isInitialized()) {
-                try DIDBackend.initialize(DefaultDIDAdapter(currentNet))
+                try DIDBackend.initialize(DefaultDIDAdapter("https://api.elastos.io/eid"))
             }
             print("DIDBackend.initialize")
             
             // Generate a random password
-            self.userDIDStorePass = ""
             if try !(didStore.containsRootIdentities()) {
-                self.rootIdentity = try RootIdentity.create(mnemonic, false, didStore, self.userDIDStorePass)
+                self.rootIdentity = try RootIdentity.create(mnemonic, false, didStore, self.defaultStorePass)
             }
+            self.rootIdentity = try didStore.loadRootIdentity()
             print("rootIdentity = \(self.rootIdentity)")
+
+            try didStore.synchronize()
             let dids = try didStore.listDids()
+            print("dids = ", dids)
             
+            //TODO: 默认只取第一个did // 其他的did暂时不支持
             if dids.count > 0 {
                 self.didString = dids[0].description
             }
-//            let id = try didStore.loadRootIdentity()!.getId()
-//
-//            let root1: String = "\(NSHomeDirectory())/Library/Caches/DamusKeys"
-//            let tempDir: String = "\(root1)/tempDir"
-//            let exportFile = tempDir + "/idexport.json"
-//            self.deleteFile(exportFile)
-//            try create(exportFile, forWrite: true)
-//            let fileHndle: FileHandle = FileHandle(forWritingAtPath: exportFile)!
-//
-//            try didStore.exportRootIdentity(id, to: fileHndle, using: "", storePassword: userDIDStorePass)
-//            let readerHndle = FileHandle(forReadingAtPath: exportFile)
-//            let data = try readerHndle?.readDataToEndOfFile()
-//            let stringData = String(data: data!, encoding: .utf8)
-//            print("stringData = \(stringData)")
-            
-//            let m = "jayuhyO2FLd5w8nO0Phk2OiJpQmA2y0_ZGzFvvMj2kbMth54sOR1iSBRrEac8pGf"
-//            let p = "xpub6CmeARucy5ZRTYtWbQTvfbMWZNDsVQSYeyBe8d6b7vRzGZ8gPr1yPXSbwWtrDrvwx4WGNUycEBz91PXfJhYLZsZbvuFENinKcsK9yCwUJLZ"
-//            let s = "75NZt_rxw19YvXR7GWACh9f_k24u3rh6gQNcQrQ_wzsP7qMcFP2GTjpHMI7LAd9FpCq3bWIAHQbqGcCqchUjSmnbUqEUSvlY4ETPDWpKugWeHIqWDG5z965j8LfhqK9x"
-            
-//            let dic = String(data: data!, encoding: .utf8)?.toDictionary()
-//            let re = try RootIdentityExport.deserialize(dic!)
-//            let p = re.publicKey
-//            print("p = \(p)")
-//            
-//            let s = try re.getPrivateKey("", "")
-//            print("s = \(s)")
-            
+            // TODO: 判断本地是否有此did存储
         } catch {
             print("carsh : \(error)")
         }
@@ -206,7 +191,7 @@ struct SetupView: View {
                                 EmptyView()
                             }
                             
-                            NavigationLink(destination: LoginView(scanResult: scanresult, publicKey: pk, privateKey: sk, did: didString), tag: .login, selection: $state ) {
+                            NavigationLink(destination: LoginView(scanResult: scanresult, publicKey: pk, privateKey: sk, did: didString, rootPath: rootPath), tag: .login, selection: $state ) {
                                 EmptyView()
                             }
                             

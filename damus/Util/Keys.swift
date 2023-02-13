@@ -131,9 +131,17 @@ func save_keypair(pubkey: String, privkey: String) throws {
     try save_privkey(privkey: privkey)
 }
 
+func clear_CurrentDid() throws {
+    UserDefaults.standard.removeObject(forKey: defaultsKeys.currentUserDid)
+}
+
 func clear_keypair() throws {
-    try clear_saved_privkey()
-    clear_saved_pubkey()
+//    try clear_saved_privkey()
+//    clear_saved_pubkey()
+}
+
+func get_saved_CurrentDid() -> String? {
+    return UserDefaults.standard.string(forKey: defaultsKeys.currentUserDid)
 }
 
 func get_saved_keypair() -> Keypair? {
