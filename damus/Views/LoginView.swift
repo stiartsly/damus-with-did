@@ -273,6 +273,7 @@ struct LoginView: View {
         parsedDID()
         self.logInStatus = .retry
         self.buttonTitle = logInStatus.title
+        self.didString = "正在解析中"
         print("DODO2 登录 mnemonic = \(mnemonic)")
     }
     
