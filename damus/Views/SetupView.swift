@@ -212,7 +212,7 @@ struct SetupView: View {
                             Button("关闭") {
                                 self.isShowing = false
                                 self.selectedIndex = 0
-                            }.frame(width: 44, height: 44)
+                            }.frame(width: 44, height: 44).padding(12)
                                 .cornerRadius(22)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
@@ -248,13 +248,14 @@ struct SetupView: View {
                     
                 } POPBContent: {
                     
-                    VStack {
+                    VStack(spacing: 30) {
+                        Spacer()
 
                         HStack {
                             Spacer()
                             Button("关闭") {
                                 self.isShowing = false
-                            }.frame(width: 44, height: 44)
+                            }.frame(width: 44, height: 44).padding(12)
                                 .cornerRadius(22)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
@@ -274,54 +275,60 @@ struct SetupView: View {
                             }.background(
                                 LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
                             ).foregroundColor(.white)
-                        
-                    }.frame(width: 350, height: 300)
+                        Spacer()
+
+                    }.frame(width: 350, height: 280)
                         .background(Color(hex: "161C24"))// 161C24  background(.white)
                         .cornerRadius(20)
                         .overlay {
                             RoundedRectangle(cornerRadius: 20).stroke(.blue, lineWidth: 1)
                         }
-                    
-                    
-                    
+                                        
                 } POPCContent: {
                     
 
                     
-                    VStack {
+                    VStack () {
                         HStack {
                             Spacer()
                             Button("关闭") {
                                 self.isShowingC = false
-                            }.frame(width: 44, height: 44)
+                            }.frame(width: 44, height: 44).padding(12)
                                 .cornerRadius(22)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                                }
-                        }.frame(height: 44)
+                                }.padding(.top)
+                        }.frame(height: 44).background(.gray)
                         HStack {
-                            VStack {
-                                Text("创建身份").font(.system(size: 25))
+                            VStack(alignment: .leading) {
+                                Text("创建身份").font(.system(size: 20))
                                 Text("向您的设备添加新身份").font(.system(size: 15))
-                            }.frame(width: 150)
-                            Image(systemName: "touchid")
-                        }.padding(10).cornerRadius(22)
+                            }
+                            Spacer()
+
+                            Image("ic-tick")
+                                .resizable()
+                                .frame(width: 20, height: 20, alignment: .trailing).padding(12)
+                        }.padding(20).cornerRadius(22).background(.pink)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                            }.background(.red)
-                        Image(systemName: "touchid").padding(10)
-                        HStack {
-                            VStack {
-                                Text("发布身份").font(.system(size: 25))
+                            }
+                        Image(systemName: "arrow.down")
+                        HStack  {
+                            VStack (alignment: .leading){
+                                Text("发布身份").font(.system(size: 20))
                                 Text("将身份记录到公开仓库上，此步骤大约15秒").font(.system(size: 15))
-                            }.frame(width: 400)
-                            Image(systemName: "touchid")
+                            }
+                            Spacer()
+
+                            Image(systemName: "circle").padding(12)
                         }.padding(10).cornerRadius(22)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                            }.background(.red)
-                        Image(systemName: "touchid").padding(10)
-                    }.frame(width: 400, height: 500).background(.white)
+                            }.background(.pink)
+                        Spacer()
+
+                    }.frame(width: 400, height: 300).background(.white)
                 }
             }
         }
