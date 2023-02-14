@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CodeScanner
-//import ElastosDIDSDK
 
 extension String {
     
@@ -263,7 +262,10 @@ struct SetupView: View {
                         }.frame(height: 44)
                         
                         HStack {
-                            TextField("输入名称", text: $textfieldText).frame(height: 50).background(.white)
+                            TextField("输入名称", text: $textfieldText).frame(height: 50).background(.white).cornerRadius(8)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8).stroke(.white, lineWidth: 1)
+                                }
                         }.padding(20)
                         Button("下一个") {
                             self.isShowingB = false
@@ -275,7 +277,7 @@ struct SetupView: View {
                             }.background(
                                 LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
                             ).foregroundColor(.white)
-                        Spacer()
+                        Spacer().frame(height: 44)
 
                     }.frame(width: 350, height: 280)
                         .background(Color(hex: "161C24"))// 161C24  background(.white)

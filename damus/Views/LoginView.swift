@@ -65,7 +65,7 @@ enum LogInStatus {
             return true
         case .login:
             return false
-        case .invalid: // TODO: 
+        case .invalid: // TODO:
             return true
         }
     }
@@ -246,7 +246,7 @@ struct LoginView: View {
             self.logInStatus = .retry
             self.buttonTitle = logInStatus.title
             let di = DamusIdentity.shared()
-            didString = di.handleDidPkSk(mnemonic: mnemonic)
+            didString = di.handleMnemonic(mnemonic: mnemonic)
             _ = checkLoginStatus()
         })
     }
