@@ -286,49 +286,57 @@ struct SetupView: View {
                                         
                 } POPCContent: {
                     
-
-                    
-                    VStack () {
+                    VStack (alignment: .center) {
                         HStack {
                             Spacer()
                             Button("关闭") {
                                 self.isShowingC = false
-                            }.frame(width: 44, height: 44).padding(12)
-                                .cornerRadius(22)
+                            }.frame(width: 44, height: 30).padding(12)
+                                .cornerRadius(20)
                                 .overlay {
-                                    RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                                }.padding(.top)
-                        }.frame(height: 44).background(.gray)
+                                    RoundedRectangle(cornerRadius: 20).stroke(.clear, lineWidth: 1)
+                                }
+                        }.frame(height: 30)
+                        Spacer().frame(height: 5)
                         HStack {
-                            VStack(alignment: .leading) {
-                                Text("创建身份").font(.system(size: 20))
-                                Text("向您的设备添加新身份").font(.system(size: 15))
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("创建身份").font(.system(size: 18)).padding(.leading,12)
+                                Text("向您的设备添加新身份").font(.system(size: 15)).padding(.leading,12)
                             }
                             Spacer()
 
                             Image("ic-tick")
                                 .resizable()
-                                .frame(width: 20, height: 20, alignment: .trailing).padding(12)
-                        }.padding(20).cornerRadius(22).background(.pink)
+                                .frame(width: 20, height: 20, alignment: .trailing)
+                                .padding(40)
+                        }.frame(width:280, height: 80)
+                            .background(.white)
+                            .cornerRadius(20)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                                RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1).shadow(radius: 0.25).opacity(0.5)
                             }
+                        
+                        Spacer().frame(height:10)
                         Image(systemName: "arrow.down")
+                        Spacer().frame(height:10)
                         HStack  {
-                            VStack (alignment: .leading){
-                                Text("发布身份").font(.system(size: 20))
-                                Text("将身份记录到公开仓库上，此步骤大约15秒").font(.system(size: 15))
+                            VStack (alignment: .leading, spacing: 5){
+                                Text("发布身份").font(.system(size: 18)).padding(.leading,12)
+                                Text("将身份记录到公开仓库上，此步骤大约15秒").font(.system(size: 15)).padding(.leading,12)
                             }
                             Spacer()
 
                             Image(systemName: "circle").padding(12)
-                        }.padding(10).cornerRadius(22)
+                        }.frame(width:280, height: 100).cornerRadius(20)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-                            }.background(.pink)
-                        Spacer()
+                                RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1).shadow(radius: 0.25).opacity(0.5)
+                            }.background(.white)
+                        Spacer().frame(height:44)
 
-                    }.frame(width: 400, height: 300).background(.white)
+                    }.frame(width: 350, height: 320).background(.white).cornerRadius(20)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1)
+                    }
                 }
             }
         }
