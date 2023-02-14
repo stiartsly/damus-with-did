@@ -75,16 +75,17 @@ struct CarouselItemView: View {
     let item: CarouselItem
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 70) {
             item.image
                 .resizable()
-                .frame(width: 120, height: 120)
+                .frame(width: 200, height: 133)
             item.text
-                .multilineTextAlignment(.center)
-                .font(.title2)
+                .multilineTextAlignment(.leading)
+                .font(.system(size: 18))
                 .foregroundColor(Color.white)
                 .padding([.leading,.trailing], 50.0)
                 .minimumScaleFactor(0.5)
+            Spacer()
         }
     }
 }

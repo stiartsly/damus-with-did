@@ -105,9 +105,9 @@ struct SetupView: View {
                     ZStack() {
                         
                         VStack(alignment: .center) {
-                            NavigationLink(destination: EULAView(state: state), tag: .create_account, selection: $state ) {
-                                EmptyView()
-                            }
+//                            NavigationLink(destination: EULAView(state: state), tag: .create_account, selection: $state ) {
+//                                EmptyView()
+//                            }
                             
                             NavigationLink(destination: LoginView(mnemonic: scanresult), tag: .login, selection: $state ) {
                                 EmptyView()
@@ -119,7 +119,6 @@ struct SetupView: View {
                                 .padding([.top], 80.0)
                             
                             Text("Web3 社交网络").foregroundColor(.white).bold().font(.system(size: 25)).padding(EdgeInsets(top: 40, leading: 0, bottom: 0, trailing: 0))
-                            
                             
                             
                             
@@ -212,6 +211,7 @@ struct SetupView: View {
                             Spacer()
                             Button("关闭") {
                                 self.isShowing = false
+                                self.selectedIndex = 0
                             }.frame(width: 44, height: 44)
                                 .cornerRadius(22)
                                 .overlay {
@@ -321,20 +321,8 @@ struct SetupView: View {
                                 RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
                             }.background(.red)
                         Image(systemName: "touchid").padding(10)
-//                        HStack {
-//                            VStack {
-//                                Text("22222").font(.system(size: 25))
-//                                Text("33333").font(.system(size: 15))
-//                            }.frame(width: 150)
-//                            Image(systemName: "touchid")
-//                        }.padding(10).cornerRadius(22)
-//                            .overlay {
-//                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
-//                            }.background(.red)
-
                     }.frame(width: 400, height: 500).background(.white)
                 }
-
             }
         }
         .navigationBarTitleDisplayMode(.inline)
