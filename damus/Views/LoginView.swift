@@ -38,6 +38,7 @@ enum LogInStatus {
     case notNetWork
     case retry
     case login
+    case invalid
     
     var title: String {
         switch self {
@@ -49,6 +50,8 @@ enum LogInStatus {
             return NSLocalizedString("登录中，请稍后", comment: "正在解析助记词")
         case .login:
             return NSLocalizedString("开始使用", comment: "进入首页")
+        case .invalid:
+            return NSLocalizedString("无效的DID，请检查后重新导入", comment: "进入首页")
         }
     }
     
@@ -62,6 +65,8 @@ enum LogInStatus {
             return true
         case .login:
             return false
+        case .invalid: // TODO: 
+            return true
         }
     }
 }
