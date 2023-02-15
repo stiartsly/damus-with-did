@@ -44,7 +44,7 @@ public class DamusIdentity {
         
         return instance!
     }
-    
+
     func createDidStore() throws {
         let currentPath = Int.random(in: 0...1000)
         rootPath = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore" + "\(currentPath)"
@@ -52,7 +52,7 @@ public class DamusIdentity {
         print("rootPath = \(rootPath)")
     }
     
-    public func createNewMnemonic(name: String) throws {
+    func createNewMnemonic(name: String) throws {
         mnemonic = try Mnemonic.generate(Mnemonic.DID_ENGLISH)
         rootIdentity = try RootIdentity.create(mnemonic, true, didStore!, defaultStorePass)
     }
@@ -60,6 +60,19 @@ public class DamusIdentity {
     public func createNewDid(name: String) throws {
         try createNewMnemonic(name: name)
         var doc = try rootIdentity!.newDid(defaultStorePass)
+        print("createNewDid name = \(name)")
+        if !name.isEmpty {
+            print("rootPath = \(rootPath)")
+            doc = try createNameCredential(doc, name: name)
+        }
+
+        try doc.publish(using: defaultStorePass)
+        didString = doc.subject.description
+        print("createNewDid didString === \(didString)")
+    }
+    
+    func createNameCredential(_ didDocument: DIDDocument, name: String) throws -> DIDDocument {
+        var doc = didDocument
         let db = try doc.editing()
         let js = ["name": name]
         let json = js.toJsonString() != nil ? js.toJsonString()! : ""
@@ -67,12 +80,11 @@ public class DamusIdentity {
 //        var json = "{\"name\":\"Foo Bar\"}"
         _ = try db.appendCredential(with: "#name", json: json, using: defaultStorePass)
         doc = try db.seal(using: defaultStorePass)
-        try doc.publish(using: defaultStorePass)
-        didString = doc.subject.description
-        print("createNewDid didString === \(didString)")
+        
+        return doc
     }
     
-    public func createIdentity(mnemonic: String) throws {
+    func createIdentity(mnemonic: String) throws {
         // Generate a random password
         if try !(didStore!.containsRootIdentities()) {
             self.rootIdentity = try RootIdentity.create(mnemonic, false, didStore!, defaultStorePass)
@@ -83,18 +95,6 @@ public class DamusIdentity {
     
     public func handleMnemonic(mnemonic: String) -> String {
         do {
-//            let currentPath = Int.random(in: 0...1000)
-//            rootPath = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore" + "\(currentPath)"
-//            let didStore = try DIDStore.open(atPath: rootPath)
-//            print("rootPath = \(rootPath)")
-//
-//            // Generate a random password
-//            if try !(didStore.containsRootIdentities()) {
-//                self.rootIdentity = try RootIdentity.create(mnemonic, false, didStore, self.defaultStorePass)
-//            }
-//            self.rootIdentity = try didStore.loadRootIdentity()
-//            print("rootIdentity = \(self.rootIdentity)")
-//
             try createDidStore()
             try createIdentity(mnemonic: mnemonic)
             try didStore!.synchronize()
