@@ -224,6 +224,7 @@ struct SetupView: View {
                             if (self.selectedIndex == 2) {
                                 self.selectedIndex = 0
                                 self.isShowing = false
+                                
                                 self.isShowingB = true
                             } else {
                                 self.selectedIndex = self.selectedIndex + 1
