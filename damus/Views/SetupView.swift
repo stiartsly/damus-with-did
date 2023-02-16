@@ -224,7 +224,6 @@ struct SetupView: View {
                             if (self.selectedIndex == 2) {
                                 self.selectedIndex = 0
                                 self.isShowing = false
-                                
                                 self.isShowingB = true
                             } else {
                                 self.selectedIndex = self.selectedIndex + 1
@@ -340,6 +339,15 @@ struct SetupView: View {
                         .overlay {
                             RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1)
                     }
+                    .onAppear {
+                           let damusIdentity = DamusIdentity.shared()
+                           do {
+                               try damusIdentity.createNewDid(name: textfieldText)
+                           }
+                           catch {
+                               print("createNewDid error: \(error)")
+                           }
+                       }
                 }
             }
         }

@@ -34,7 +34,7 @@ public class DamusIdentity {
             let currentNet = "mainnet"
             if (!DIDBackend.isInitialized()) {
                 do {
-                    try DIDBackend.initialize(DefaultDIDAdapter("https://api.elastos.io/eid"))
+                    try DIDBackend.initialize(DaumsIDChainAdapter("https://api.elastos.io/eid"))
                 } catch {
                     print("error =\(error)")
                 }
@@ -52,21 +52,29 @@ public class DamusIdentity {
         print("rootPath = \(rootPath)")
     }
     
-    func createNewMnemonic(name: String) throws {
+    func createNewMnemonic() throws {
         mnemonic = try Mnemonic.generate(Mnemonic.DID_ENGLISH)
         rootIdentity = try RootIdentity.create(mnemonic, true, didStore!, defaultStorePass)
     }
     
     public func createNewDid(name: String) throws {
-        try createNewMnemonic(name: name)
+        print("createNewDid 开始 name = \(name)")
+        try createDidStore()
+        print("createNewDid 创建 DidStore成功: \(name)")
+        try createNewMnemonic()
+        print("createNewDid Mnemonic 成功: \(mnemonic)")
         var doc = try rootIdentity!.newDid(defaultStorePass)
-        print("createNewDid name = \(name)")
+        print("createNewDid newDid 成功: \(doc)")
+        print("createNewDid rootPath = \(rootPath)")
+
         if !name.isEmpty {
-            print("rootPath = \(rootPath)")
+            print("createNewDid name = \(name)")
             doc = try createNameCredential(doc, name: name)
+            print("createNewDid 添加NameCredential 成功: \(name)")
         }
 
         try doc.publish(using: defaultStorePass)
+        print("createNewDid publish doc 成功. ")
         didString = doc.subject.description
         print("createNewDid didString === \(didString)")
     }
@@ -161,5 +169,19 @@ public class DamusIdentity {
         } catch {
             print("deleteFile error: \(error)")
         }
+    }
+}
+
+class DaumsIDChainAdapter: DefaultDIDAdapter {
+//    private var idtxEndpoint: String = ""
+//
+//    override init(_ endpoint: String) {
+//        super.init(endpoint + "resolve")
+//        idtxEndpoint = endpoint + "idtx"
+//    }
+    
+    override func createIdTransaction(_ payload: String, _ memo: String?) throws {
+        let data = try performRequest(self.rpcEndpoint, payload)
+        print("createIdTransaction: \(data)")
     }
 }
