@@ -172,6 +172,18 @@ struct LoginView: View {
                     .padding()
                     .frame(maxWidth: .infinity,alignment: .center)
                 
+                Text("DID: \(self.didString)")
+                    .foregroundColor(.white)
+                    .padding().onAppear {
+                        parsedDID()
+                    }
+                
+                DamusWhiteButton(self.buttonTitle, self.logInStatus.disabled, action: {
+                    print("DODO1 登录 mnemonic = \(mnemonic)")
+                    checkLogin()
+                }).frame(maxWidth: .infinity,alignment: .center).buttonStyle(.plain)
+                
+                
                 //                Text("Enter your account key to login:", comment: "Prompt for user to enter an account key to login.")
                 //                    .foregroundColor(.white)
                 //                    .padding()
@@ -189,16 +201,6 @@ struct LoginView: View {
                 //                    .foregroundColor(.white)
                 //                    .padding()
                 //
-                Text("DID: \(self.didString)")
-                    .foregroundColor(.white)
-                    .padding().onAppear {
-                        parsedDID()
-                    }
-                
-                DamusWhiteButton(self.buttonTitle, self.logInStatus.disabled, action: {
-                    print("DODO1 登录 mnemonic = \(mnemonic)")
-                    checkLogin()
-                }).frame(maxWidth: .infinity,alignment: .center).buttonStyle(.plain)
                 
                 //                KeyInput(NSLocalizedString("nsec1...", comment: "Prompt for user to enter in an account key to login. This text shows the characters the key could start with if it was a private key."), key: $scanResult)
                 
