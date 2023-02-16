@@ -340,13 +340,16 @@ struct SetupView: View {
                             RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1)
                     }
                     .onAppear {
-                           let damusIdentity = DamusIdentity.shared()
-                           do {
-                               try damusIdentity.createNewDid(name: textfieldText)
-                           }
-                           catch {
-                               print("createNewDid error: \(error)")
-                           }
+                        DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1), execute: {
+                            let damusIdentity = DamusIdentity.shared()
+                            do {
+                                try damusIdentity.createNewDid(name: textfieldText)
+                            }
+                            catch {
+                                print("createNewDid error: \(error)")
+                            }
+                        })
+
                        }
                 }
             }
