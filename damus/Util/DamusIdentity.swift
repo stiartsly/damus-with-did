@@ -173,15 +173,16 @@ public class DamusIdentity {
 }
 
 class DaumsIDChainAdapter: DefaultDIDAdapter {
-//    private var idtxEndpoint: String = ""
-//
-//    override init(_ endpoint: String) {
-//        super.init(endpoint + "resolve")
+    private var idtxEndpoint: String = ""
+
+    override init(_ endpoint: String) {
+        super.init(endpoint)
 //        idtxEndpoint = endpoint + "idtx"
-//    }
+        idtxEndpoint = endpoint
+    }
     
     override func createIdTransaction(_ payload: String, _ memo: String?) throws {
-        let data = try performRequest(self.rpcEndpoint, payload)
+        let data = try performRequest(self.idtxEndpoint, payload)
         print("createIdTransaction: \(data)")
     }
 }
