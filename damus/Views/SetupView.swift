@@ -97,6 +97,11 @@ struct SetupView: View {
         }
     }
 
+    func login() {
+        _ = damusIdentity.save_did()
+        notify(.login, ())
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -337,7 +342,6 @@ struct SetupView: View {
                                     .resizable()
                                     .frame(width: 20, height: 20, alignment: .trailing)
                                     .padding(30)
-//                                notify(.login, ())
 
 //                                let path = Bundle.main.url(forResource: "sucess", withExtension: "gif")!
 //                                KFAnimatedImage(source:
@@ -349,9 +353,21 @@ struct SetupView: View {
                             .overlay {
                                 RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1).shadow(radius: 0.25).opacity(0.5)
                             }.background(.white)
+                        Spacer().frame(height:22)
+
+                        Button("开始使用") {
+                            login()
+                        }.frame(width: 300, height: 44)
+                            .cornerRadius(22)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 22).stroke(.clear, lineWidth: 1)
+                            }.background(
+                                LinearGradient(gradient: Gradient(colors: [Color(hex:"7624FE"), Color(hex:"368BFF")]), startPoint: .leading, endPoint: .trailing).cornerRadius(22)
+                            ).foregroundColor(.white).padding(EdgeInsets(top: 17, leading: 0, bottom: 0, trailing: 0)).buttonStyle(.plain).disabled(self.isAnimating)
+                        
                         Spacer().frame(height:44)
 
-                    }.frame(width: 350, height: 320).background(.white).cornerRadius(20)
+                    }.frame(width: 350, height: 402).background(.white).cornerRadius(20)
                         .overlay {
                             RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1)
                     }
@@ -359,7 +375,7 @@ struct SetupView: View {
                         isAnimating = true
                         DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1), execute: {
                             do {
-//                                try damusIdentity.createNewDid(name: textfieldText)
+                                try damusIdentity.createNewDid(name: textfieldText)
                                 isAnimating = false
                             }
                             catch {
