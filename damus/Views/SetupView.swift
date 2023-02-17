@@ -76,7 +76,8 @@ struct SetupView: View {
 
     @State private var selectedIndex: Int = 0
     let damusIdentity = DamusIdentity.shared()
-    
+    @State private var isAnimating: Bool = true
+
     //新增
     @State private var pk: String = ""
     @State private var sk: String = ""
@@ -329,13 +330,20 @@ struct SetupView: View {
                                 Text("将身份记录到公开仓库上，此步骤大约15秒").font(.system(size: 15)).padding(.leading,12)
                             }
                             Spacer()
-                            ActivityIndicator(style: .medium).padding(30)
 //                            Image(systemName: "circle").padding(12)
-//                            let path = Bundle.main.url(forResource: "nftloading", withExtension: "gif")!
-                            
-//                            KFAnimatedImage(source:
-//                                    .provider(LocalFileImageDataProvider(fileURL: path))
-//                            ).frame(width: 20, height: 20, alignment: .trailing).background(.red).padding(30)
+                            ActivityIndicator(isAnimating: $isAnimating, style: .medium).padding(30)
+                            if isAnimating == false {
+                                Image("ic-tick")
+                                    .resizable()
+                                    .frame(width: 20, height: 20, alignment: .trailing)
+                                    .padding(30)
+//                                notify(.login, ())
+
+//                                let path = Bundle.main.url(forResource: "sucess", withExtension: "gif")!
+//                                KFAnimatedImage(source:
+//                                        .provider(LocalFileImageDataProvider(fileURL: path))
+//                                ).frame(width: 20, height: 20, alignment: .trailing).background(.red).padding(30)
+                            }
                             
                         }.frame(width:300, height: 100).cornerRadius(20)
                             .overlay {
@@ -348,11 +356,14 @@ struct SetupView: View {
                             RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1)
                     }
                     .onAppear {
+                        isAnimating = true
                         DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1), execute: {
                             do {
 //                                try damusIdentity.createNewDid(name: textfieldText)
+                                isAnimating = false
                             }
                             catch {
+                                isAnimating = false
                                 print("createNewDid error: \(error)")
                             }
                         })
@@ -367,6 +378,7 @@ struct SetupView: View {
 }
 
 struct ActivityIndicator: UIViewRepresentable {
+    @Binding var isAnimating: Bool
     let style: UIActivityIndicatorView.Style
     
     func makeUIView(context: Context) -> UIActivityIndicatorView  {
@@ -376,7 +388,7 @@ struct ActivityIndicator: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UIActivityIndicatorView, context: Context) {
-        uiView.startAnimating()
+        isAnimating ? uiView.startAnimating() : uiView.stopAnimating()
     }
 }
 

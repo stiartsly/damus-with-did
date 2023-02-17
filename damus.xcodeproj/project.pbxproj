@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1122C52A29911A0A00324042 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 1122C52929911A0A00324042 /* CodeScanner */; };
 		115B168C299A36FD007D0B78 /* DamusIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115B168B299A36FD007D0B78 /* DamusIdentity.swift */; };
-		115B1698299E2A3D007D0B78 /* nftloading.gif in Resources */ = {isa = PBXBuildFile; fileRef = 115B1697299E2A3D007D0B78 /* nftloading.gif */; };
+		1195D502299F4EEA0053296A /* sucess.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1195D501299F4EEA0053296A /* sucess.gif */; };
 		11CB6F4E2993CA4D00DED1FE /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB6F4D2993CA4D00DED1FE /* WelcomeView.swift */; };
 		3165648B295B70D500C64604 /* LinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3165648A295B70D500C64604 /* LinkView.swift */; };
 		3169CAE6294E69C000EE4006 /* EmptyTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3169CAE5294E69C000EE4006 /* EmptyTimelineView.swift */; };
@@ -231,7 +231,7 @@
 /* Begin PBXFileReference section */
 		05D9CC8FDFCDABC3E9A25670 /* Pods-damusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damusTests.debug.xcconfig"; path = "Target Support Files/Pods-damusTests/Pods-damusTests.debug.xcconfig"; sourceTree = "<group>"; };
 		115B168B299A36FD007D0B78 /* DamusIdentity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DamusIdentity.swift; sourceTree = "<group>"; };
-		115B1697299E2A3D007D0B78 /* nftloading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = nftloading.gif; sourceTree = "<group>"; };
+		1195D501299F4EEA0053296A /* sucess.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sucess.gif; sourceTree = "<group>"; };
 		11CB6F4D2993CA4D00DED1FE /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		12E8596092C4E23EE37B5FB8 /* Pods_damusTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_damusTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		196AB1474B2C830619197E43 /* Pods-damusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damusTests.release.xcconfig"; path = "Target Support Files/Pods-damusTests/Pods-damusTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -879,7 +879,7 @@
 				4C75EFA227FA576C0006080F /* Views */,
 				4CE6DEE627F7A08100C66700 /* damusApp.swift */,
 				4CE6DEE827F7A08100C66700 /* ContentView.swift */,
-				115B1697299E2A3D007D0B78 /* nftloading.gif */,
+				1195D501299F4EEA0053296A /* sucess.gif */,
 				4CE6DEEA27F7A08200C66700 /* Assets.xcassets */,
 				4CE6DEEC27F7A08200C66700 /* Preview Content */,
 				3A4325AA2961E11400BFCD9D /* Localizable.stringsdict */,
@@ -1104,10 +1104,10 @@
 			files = (
 				3ACB685F297633BC00C46468 /* Localizable.strings in Resources */,
 				4CE6DEEE27F7A08200C66700 /* Preview Assets.xcassets in Resources */,
-				115B1698299E2A3D007D0B78 /* nftloading.gif in Resources */,
 				3ACB685C297633BC00C46468 /* InfoPlist.strings in Resources */,
 				4CE6DEEB27F7A08200C66700 /* Assets.xcassets in Resources */,
 				3A4325A82961E11400BFCD9D /* Localizable.stringsdict in Resources */,
+				1195D502299F4EEA0053296A /* sucess.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
