@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CodeScanner
+import Kingfisher
 
 extension String {
     
@@ -74,6 +75,7 @@ struct SetupView: View {
     @State private var textfieldText: String = ""
 
     @State private var selectedIndex: Int = 0
+    let damusIdentity = DamusIdentity.shared()
     
     //新增
     @State private var pk: String = ""
@@ -310,8 +312,8 @@ struct SetupView: View {
                             Image("ic-tick")
                                 .resizable()
                                 .frame(width: 20, height: 20, alignment: .trailing)
-                                .padding(40)
-                        }.frame(width:280, height: 80)
+                                .padding(30)
+                        }.frame(width:300, height: 80)
                             .background(.white)
                             .cornerRadius(20)
                             .overlay {
@@ -327,9 +329,15 @@ struct SetupView: View {
                                 Text("将身份记录到公开仓库上，此步骤大约15秒").font(.system(size: 15)).padding(.leading,12)
                             }
                             Spacer()
-
-                            Image(systemName: "circle").padding(12)
-                        }.frame(width:280, height: 100).cornerRadius(20)
+                            ActivityIndicator(style: .medium).padding(30)
+//                            Image(systemName: "circle").padding(12)
+//                            let path = Bundle.main.url(forResource: "nftloading", withExtension: "gif")!
+                            
+//                            KFAnimatedImage(source:
+//                                    .provider(LocalFileImageDataProvider(fileURL: path))
+//                            ).frame(width: 20, height: 20, alignment: .trailing).background(.red).padding(30)
+                            
+                        }.frame(width:300, height: 100).cornerRadius(20)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 20).stroke(.white, lineWidth: 1).shadow(radius: 0.25).opacity(0.5)
                             }.background(.white)
@@ -341,9 +349,8 @@ struct SetupView: View {
                     }
                     .onAppear {
                         DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1), execute: {
-                            let damusIdentity = DamusIdentity.shared()
                             do {
-                                try damusIdentity.createNewDid(name: textfieldText)
+//                                try damusIdentity.createNewDid(name: textfieldText)
                             }
                             catch {
                                 print("createNewDid error: \(error)")
@@ -359,7 +366,19 @@ struct SetupView: View {
     }
 }
 
-
+struct ActivityIndicator: UIViewRepresentable {
+    let style: UIActivityIndicatorView.Style
+    
+    func makeUIView(context: Context) -> UIActivityIndicatorView  {
+        let indicator = UIActivityIndicatorView(style: style)
+        indicator.color = .purple
+        return indicator
+    }
+    
+    func updateUIView(_ uiView: UIActivityIndicatorView, context: Context) {
+        uiView.startAnimating()
+    }
+}
 
 private struct SafeAreaInsetsKey: EnvironmentKey {
     static var defaultValue: EdgeInsets {

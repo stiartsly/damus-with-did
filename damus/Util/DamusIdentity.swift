@@ -177,7 +177,6 @@ class DaumsIDChainAdapter: DefaultDIDAdapter {
 
     override init(_ endpoint: String) {
         super.init(endpoint)
-//        idtxEndpoint = endpoint + "idtx"
         idtxEndpoint = endpoint
     }
     

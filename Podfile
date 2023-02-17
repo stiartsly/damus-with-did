@@ -6,6 +6,8 @@ target 'damus' do
   use_frameworks!
 
       pod 'ElastosDIDSDK', '~> 2.2.14'
+      pod 'SVGView'
+      pod 'Kingfisher'
 
   target 'damusTests' do
     inherit! :search_paths
