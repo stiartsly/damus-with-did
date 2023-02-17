@@ -1813,10 +1813,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = damus/damus.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"damus/Preview Content\"";
-				DEVELOPMENT_TEAM = T4LVNDN76A;
+				DEVELOPMENT_TEAM = X2ZZSKA63B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = damus/Info.plist;
@@ -1840,8 +1841,9 @@
 				);
 
 				MARKETING_VERSION = 1.1.0;
-                PRODUCT_BUNDLE_IDENTIFIER = "com.jb55.damus2-1";
+                PRODUCT_BUNDLE_IDENTIFIER = "com.jb55.damus2-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "damus-c/damus-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1861,7 +1863,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"damus/Preview Content\"";
-				DEVELOPMENT_TEAM = T4LVNDN76A;
+				DEVELOPMENT_TEAM = X2ZZSKA63B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = damus/Info.plist;
@@ -1884,7 +1886,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 1.1.0;
-                PRODUCT_BUNDLE_IDENTIFIER = "com.jb55.damus2-1";
+                PRODUCT_BUNDLE_IDENTIFIER = "com.jb55.damus2-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "damus-c/damus-Bridging-Header.h";
