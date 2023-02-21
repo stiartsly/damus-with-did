@@ -37,8 +37,8 @@ struct MainView: View {
         }
         .onReceive(handle_notify(.logout)) { _ in
             print("2 ---------------------> ")
-//            try? clear_keypair()
-//            currentUserDid = nil
+            try? clear_keypair()
+            currentUserDid = nil
         }
         .onAppear {
             print("3 ---------------------> ")
