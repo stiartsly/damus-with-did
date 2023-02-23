@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1122C52A29911A0A00324042 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 1122C52929911A0A00324042 /* CodeScanner */; };
+		1138FFB629A49C5200277E98 /* ListDidsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1138FFB529A49C5200277E98 /* ListDidsView.swift */; };
 		115B168C299A36FD007D0B78 /* DamusIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115B168B299A36FD007D0B78 /* DamusIdentity.swift */; };
 		1195D502299F4EEA0053296A /* sucess.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1195D501299F4EEA0053296A /* sucess.gif */; };
 		11CB6F4E2993CA4D00DED1FE /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB6F4D2993CA4D00DED1FE /* WelcomeView.swift */; };
@@ -230,6 +231,7 @@
 
 /* Begin PBXFileReference section */
 		05D9CC8FDFCDABC3E9A25670 /* Pods-damusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damusTests.debug.xcconfig"; path = "Target Support Files/Pods-damusTests/Pods-damusTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1138FFB529A49C5200277E98 /* ListDidsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListDidsView.swift; sourceTree = "<group>"; };
 		115B168B299A36FD007D0B78 /* DamusIdentity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DamusIdentity.swift; sourceTree = "<group>"; };
 		1195D501299F4EEA0053296A /* sucess.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sucess.gif; sourceTree = "<group>"; };
 		11CB6F4D2993CA4D00DED1FE /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
@@ -688,6 +690,7 @@
 				4C3AC79E2833115300E1F516 /* FollowButtonView.swift */,
 				4C3AC79C2833036D00E1F516 /* FollowingView.swift */,
 				4C90BD17283A9EE5008EE7EF /* LoginView.swift */,
+				1138FFB529A49C5200277E98 /* ListDidsView.swift */,
 				4C363A8928236B57006E126D /* MentionView.swift */,
 				4C363A8D28236FE4006E126D /* NoteContentView.swift */,
 				4C75EFAC28049CFB0006080F /* PostButton.swift */,
@@ -1303,6 +1306,7 @@
 				4C75EFB128049D510006080F /* NostrResponse.swift in Sources */,
 				4CEE2AF7280B2DEA00AB5EEF /* ProfileName.swift in Sources */,
 				4CC7AAEB297F0AEC00430951 /* BuilderEventView.swift in Sources */,
+				1138FFB629A49C5200277E98 /* ListDidsView.swift in Sources */,
 				31D2E847295218AF006D67F8 /* Shimmer.swift in Sources */,
 				4C285C8228385570008A31F1 /* CarouselView.swift in Sources */,
 				4C3EA67F28FFC01D00C48A62 /* InvoiceView.swift in Sources */,

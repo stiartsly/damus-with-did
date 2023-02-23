@@ -16,6 +16,7 @@ public class DamusIdentity {
     public var publicKey: String = ""
     public var rootIdentity: RootIdentity?
     public var didStore: DIDStore?
+    public var document: DIDDocument?
 
     public var didString: String = ""
     public var rootPath: String = ""
@@ -43,6 +44,15 @@ public class DamusIdentity {
         }
         
         return instance!
+    }
+    
+    func loadDIDDocumentFromDidString(did: String, path: String) throws -> DIDDocument? {
+        didStore = try DIDStore.open(atPath: path)
+        document = try didStore?.loadDid(did)
+        if document == nil {
+            document = try DID(didString).resolve()
+        }
+        return document
     }
 
     func createDidStore() throws {
@@ -77,6 +87,7 @@ public class DamusIdentity {
         print("createNewDid publish doc 成功. ")
         didString = doc.subject.description
         print("createNewDid didString === \(didString)")
+        document = doc
     }
     
     func createNameCredential(_ didDocument: DIDDocument, name: String) throws -> DIDDocument {
@@ -122,6 +133,30 @@ public class DamusIdentity {
             }
             return error.localizedDescription
         }
+    }
+    
+    func didDocument()throws {
+        if document == nil {
+            document = try didStore?.loadDid(didString)
+        }
+    }
+    
+    func loadCurrentDid() -> String {
+        let defaults = UserDefaults.standard
+        if didString != "" {
+            return didString
+        }
+        
+        didString = defaults.value(forKey: defaultsKeys.currentUserDid) != nil ? defaults.value(forKey: defaultsKeys.currentUserDid) as! String : ""
+        
+        return didString
+    }
+    
+    func loadCurrentDidPath() -> String {
+        let defaults = UserDefaults.standard
+        let path = defaults.value(forKey: defaultsKeys.currentUserPath) as? String
+            
+        return path != nil ? path! : ""
     }
     
     func save_did() -> Bool {
