@@ -52,6 +52,11 @@ public class DamusIdentity {
         if document == nil {
             document = try DID(didString).resolve()
         }
+        
+        if rootIdentity == nil {
+            self.rootIdentity = try didStore!.loadRootIdentity()
+        }
+        
         return document
     }
 
@@ -154,9 +159,9 @@ public class DamusIdentity {
     
     func loadCurrentDidPath() -> String {
         let defaults = UserDefaults.standard
-        let path = defaults.value(forKey: defaultsKeys.currentUserPath) as? String
+        rootPath = defaults.value(forKey: defaultsKeys.currentUserPath) != nil ? defaults.value(forKey: defaultsKeys.currentUserPath) as! String : ""
             
-        return path != nil ? path! : ""
+        return rootPath
     }
     
     func save_did() -> Bool {
