@@ -46,7 +46,7 @@ public class DamusIdentity {
         return instance!
     }
     
-    func loadDIDDocumentFromDidString(did: String, path: String) throws -> DIDDocument? {
+    func loadDIDDocumentFromDP(did: String, path: String) throws -> DIDDocument? {
         didStore = try DIDStore.open(atPath: path)
         document = try didStore?.loadDid(did)
         if document == nil {
