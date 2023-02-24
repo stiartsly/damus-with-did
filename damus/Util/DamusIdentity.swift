@@ -19,8 +19,11 @@ public class DamusIdentity {
     public var document: DIDDocument?
 
     public var didString: String = ""
+    private var dirPath: String = NSHomeDirectory()
     public var rootPath: String = ""
-    private var defaultStorePass: String = "DUMASDIDPASSWORD"
+    private var path: String = ""
+
+    public var defaultStorePass: String = "DUMASDIDPASSWORD"
     private static var instance: DamusIdentity?
 
     deinit {
@@ -62,7 +65,10 @@ public class DamusIdentity {
 
     func createDidStore() throws {
         let currentPath = Int.random(in: 0...1000)
-        rootPath = "\(NSHomeDirectory())/Library/Caches/DumausDIDStore" + "\(currentPath)"
+        path = "/Library/Caches/DumausDIDStore" + "\(currentPath)"
+        rootPath = dirPath + path
+
+//        rootPath = "\(NSHomeDirectory()/Library/Caches/DumausDIDStore" + "\(currentPath)"
         didStore = try DIDStore.open(atPath: rootPath)
         print("rootPath = \(rootPath)")
     }
@@ -89,6 +95,8 @@ public class DamusIdentity {
         }
 
         try doc.publish(using: defaultStorePass)
+        try didStore!.storeDid(using: doc)
+
         print("createNewDid publish doc 成功. ")
         didString = doc.subject.description
         print("createNewDid didString === \(didString)")
@@ -159,9 +167,9 @@ public class DamusIdentity {
     
     func loadCurrentDidPath() -> String {
         let defaults = UserDefaults.standard
-        rootPath = defaults.value(forKey: defaultsKeys.currentUserPath) != nil ? defaults.value(forKey: defaultsKeys.currentUserPath) as! String : ""
+        path = defaults.value(forKey: defaultsKeys.currentUserPath) != nil ? defaults.value(forKey: defaultsKeys.currentUserPath) as! String : ""
             
-        return rootPath
+        return dirPath + path
     }
     
     func save_did() -> Bool {
@@ -171,7 +179,7 @@ public class DamusIdentity {
             return false
         }
         defaults.setValue(didString, forKey: defaultsKeys.currentUserDid)
-        defaults.setValue(rootPath, forKey: defaultsKeys.currentUserPath)
+        defaults.setValue(path, forKey: defaultsKeys.currentUserPath)
         return true
     }
     
