@@ -9,6 +9,7 @@ struct defaultsKeys {
 }
 let notApproveNetWork = "目前不允许数据连接。"
 let notNetWorkError = "无法连接网络：请点击登录重试"
+private var did: String = ""
 
 public class DamusIdentity {
     
@@ -25,6 +26,7 @@ public class DamusIdentity {
 
     public var defaultStorePass: String = "DUMASDIDPASSWORD"
     private static var instance: DamusIdentity?
+    private var adapter: DaumsIDChainAdapter?
 
     deinit {
         rootIdentity = nil
@@ -49,6 +51,17 @@ public class DamusIdentity {
         return instance!
     }
     
+    func exportMnemonic() -> String {
+        do {
+            let e = try rootIdentity!.exportMnemonic(defaultStorePass)
+            print("exportMnemonic = \(e)")
+            return e
+        }
+        catch {
+            return ""
+        }
+    }
+    
     func loadDIDDocumentFromDP(did: String, path: String) throws -> DIDDocument? {
         didStore = try DIDStore.open(atPath: path)
         document = try didStore?.loadDid(did)
@@ -59,7 +72,6 @@ public class DamusIdentity {
         if rootIdentity == nil {
             self.rootIdentity = try didStore!.loadRootIdentity()
         }
-        
         return document
     }
 
@@ -85,6 +97,8 @@ public class DamusIdentity {
         try createNewMnemonic()
         print("createNewDid Mnemonic 成功: \(mnemonic)")
         var doc = try rootIdentity!.newDid(defaultStorePass)
+        did = doc.subject.description
+        
         print("createNewDid newDid 成功: \(doc)")
         print("createNewDid rootPath = \(rootPath)")
 
@@ -93,9 +107,8 @@ public class DamusIdentity {
             doc = try createNameCredential(doc, name: name)
             print("createNewDid 添加NameCredential 成功: \(name)")
         }
-
-        try doc.publish(using: defaultStorePass)
         try didStore!.storeDid(using: doc)
+        try doc.publish(using: defaultStorePass)
 
         print("createNewDid publish doc 成功. ")
         didString = doc.subject.description
@@ -218,6 +231,7 @@ public class DamusIdentity {
             print("deleteFile error: \(error)")
         }
     }
+
 }
 
 class DaumsIDChainAdapter: DefaultDIDAdapter {
@@ -229,7 +243,67 @@ class DaumsIDChainAdapter: DefaultDIDAdapter {
     }
     
     override func createIdTransaction(_ payload: String, _ memo: String?) throws {
-        let data = try performRequest(self.idtxEndpoint, payload)
+        let data = try assistPerformRequest("https://assist.trinity-tech.io/v2/didtx/create", payload)
         print("createIdTransaction: \(data)")
     }
+    
+    func assistPerformRequest(_ urlString: String, _ body: String) throws -> Data? {
+        let url = URL(string: urlString)!
+        
+        let requestBody = [
+            "did": did,
+            "memo": "",
+            "requestFrom": "Essentials",
+            "didRequest": body.toDictionary()
+        ] as [String : Any]
+        print("requestBody = ", requestBody)
+        
+        var request = URLRequest.init(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("IdSFtQosmCwCB9NOLltkZrFy5VqtQn8QbxBKQoHPw7zp3w0hDOyOYjgL53DO3MDH", forHTTPHeaderField: "Authorization")
+        
+        let parameters = requestBody
+        request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        var errDes: String?
+        var result: Data?
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let response = response as? HTTPURLResponse,
+                error == nil else { // check for fundamental networking error
+                
+                errDes = error?.localizedDescription
+                let httpResponse = response as? HTTPURLResponse
+                if (httpResponse?.statusCode == 303) {
+                    errDes = "Request rejected by the server"
+                }
+                semaphore.signal()
+                return
+            }
+            
+            guard (200 ... 299) ~= response.statusCode else { // check for http errors
+                errDes = "Server eror (status code: \(response.statusCode)"
+                print(errDes)
+                print(String(data: data!, encoding: .utf8))
+                semaphore.signal()
+                return
+            }
+            
+            result = data
+            semaphore.signal()
+        }
+        
+        task.resume()
+        semaphore.wait()
+        
+        guard let _ = result else {
+            throw DIDError.CheckedError.DIDBackendError.DIDResolveError(errDes ?? "Unknown error")
+        }
+        
+        return result
+    }
+    
 }
