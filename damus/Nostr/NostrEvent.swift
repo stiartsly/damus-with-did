@@ -347,21 +347,67 @@ class NostrEvent: Codable, Identifiable, CustomStringConvertible, Equatable, Has
     func sign(privkey: String) {
         self.sig = sign_event(privkey: privkey, ev: self)
     }
+    
+    func didSign(for data: Data...) ->String {
+        let dIdentity = DamusIdentity.shared()
+        let didString = dIdentity.loadCurrentDid()
+        let didPath = dIdentity.loadCurrentDidPath()
+        do{
+            let doc = try dIdentity.loadDIDDocumentFromDP(did: didString,path: didPath)
+            self.sig = try (doc?.sign(using: dIdentity.getDefaultStorePass(), for: data))!
+            print("sig ====>\(self.sig)")
+            print("data ====>\(data)")
+            print("data ====>\(data[0])")
+//            let test = "testStr".data(using: .utf8)!
+            let result = try doc?.verify(signature: self.sig, onto: data[0])
+            
+            
+            print("result ====>\(result)")
+            
+            if(result==true){
+                print("=========")
+            }else{
+                print("!!!!!!!!!!")
+            }
+            
+            
+        } catch(let e){
+            print("sig error ====>\(e)")
+        }
+        
+        print("final sig ====>\(self.sig)")
+        return self.sig
+        
+    }
 }
 
 func sign_event(privkey: String, ev: NostrEvent) -> String {
-    let priv_key_bytes = try! privkey.bytes
-    let key = try! secp256k1.Signing.PrivateKey(rawRepresentation: priv_key_bytes)
+//    let priv_key_bytes = try! privkey.bytes
+//    let key = try! secp256k1.Signing.PrivateKey(rawRepresentation: priv_key_bytes)
+//
+//    // Extra params for custom signing
+//
+//    var aux_rand = random_bytes(count: 64)
+//    var digest = try! ev.id.bytes
+//
+//    // API allows for signing variable length messages
+//    let signature = try! key.schnorr.signature(message: &digest, auxiliaryRand: &aux_rand)
+//
+//
+//
+//    return hex_encode(signature.rawRepresentation)
+    
+    let digestStr = try! ev.id
+    let digest = digestStr.data(using: .utf8)!
+    print("digest====>\(digest)")
+    print("privkey====?\(privkey)")
+    print("ev====?\(ev)")
+    let sig = ev.didSign(for: digest)
+    return sig
 
-    // Extra params for custom signing
-
-    var aux_rand = random_bytes(count: 64)
-    var digest = try! ev.id.bytes
-
-    // API allows for signing variable length messages
-    let signature = try! key.schnorr.signature(message: &digest, auxiliaryRand: &aux_rand)
-
-    return hex_encode(signature.rawRepresentation)
+//    let signature = sig.data(using: .utf8)!
+//    let data = Data(digest)
+//    return hex_encode(signature)
 }
 
 func decode_nostr_event(txt: String) -> NostrResponse? {

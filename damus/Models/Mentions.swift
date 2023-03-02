@@ -550,6 +550,8 @@ func make_post_tags(post_blocks: [PostBlock], tags: [[String]]) -> PostTags {
         }
     }
     
+    new_tags.append(["did"])
+    
     return PostTags(blocks: blocks, tags: new_tags)
 }
 
@@ -558,9 +560,19 @@ func post_to_event(post: NostrPost, privkey: String, pubkey: String) -> NostrEve
     let post_blocks = parse_post_blocks(content: post.content)
     let post_tags = make_post_tags(post_blocks: post_blocks, tags: tags)
     let content = render_blocks(blocks: post_tags.blocks)
+    print("pubkey post_to_event====>\(pubkey)")
     let new_ev = NostrEvent(content: content, pubkey: pubkey, kind: post.kind.rawValue, tags: post_tags.tags)
     new_ev.calculate_id()
     new_ev.sign(privkey: privkey)
+    
+    print("post_to_event")
+    print("tags====>\(tags)")
+    print("post_blocks====>\(post_blocks)")
+    print("post_tags====>\(post_tags)")
+    print("post_tags.tags====>\(post_tags.tags)")
+    print("content====>\(content)")
+    print("new_ev====>\(new_ev)")
+    
     return new_ev
 }
 

@@ -262,6 +262,9 @@ public class DamusIdentity {
         catch {
             print(" error: ", error)
         }
+
+    func getDefaultStorePass() -> String{
+        return defaultStorePass
     }
 }
 
@@ -278,6 +281,7 @@ class DaumsIDChainAdapter: DefaultDIDAdapter {
         print("createIdTransaction: \(data)")
     }
     
+
     func assistPerformRequest(_ urlString: String, _ body: String) throws -> Data? {
         let url = URL(string: urlString)!
         
@@ -336,5 +340,4 @@ class DaumsIDChainAdapter: DefaultDIDAdapter {
         
         return result
     }
-    
 }

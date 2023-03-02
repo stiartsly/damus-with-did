@@ -10,13 +10,14 @@ import Starscream
 import Kingfisher
 
 var BOOTSTRAP_RELAYS = [
-    "wss://relay.damus.io",
-    "wss://eden.nostr.land",
-    "wss://relay.snort.social",
-    "wss://nostr.bitcoiner.social",
-    "wss://nos.lol",
-    "wss://relay.current.fyi",
-    "wss://brb.io",
+    "ws://192.168.3.8"
+//    "wss://relay.damus.io",
+//    "wss://eden.nostr.land",
+//    "wss://relay.snort.social",
+//    "wss://nostr.bitcoiner.social",
+//    "wss://nos.lol",
+//    "wss://relay.current.fyi",
+//    "wss://brb.io",
 ]
 
 struct TimestampedProfile {
@@ -421,7 +422,33 @@ struct ContentView: View {
             switch post_res {
             case .post(let post):
                 print("post \(post.content)")
-                let new_ev = post_to_event(post: post, privkey: privkey, pubkey: pubkey)
+                print("post ====> \(post)")
+                
+                let dIdentity = DamusIdentity.shared()
+                let didString = dIdentity.loadCurrentDid()
+                print("post didString ====> \(didString)")
+                print("pubkey ====>\(didString)")
+                
+                let didData = didString.data(using: .utf8)!
+                let didhex = hex_encode(didData)
+                print("hex_encode ====>\(didhex)")
+                
+                let didbytes = hex_decode(didhex)
+//                Data(didbytes)
+//                let data =Data(bytes: didbytes!, count: didbytes!.count)
+                
+                let str=String(bytes:didbytes!,encoding: .utf8)!
+                
+                
+//                var data = Data()
+//                data.removeAll()
+//                data.append(contentsOf:[0x31,0x32,0x33])
+//                let str = String(data:data,encoding:.utf8)!
+                print("decode====>\(str)")
+                
+                
+                
+                let new_ev = post_to_event(post: post, privkey: privkey, pubkey: didhex)
                 self.damus_state?.pool.send(.event(new_ev))
             case .cancel:
                 active_sheet = nil
