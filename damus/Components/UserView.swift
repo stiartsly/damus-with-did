@@ -20,6 +20,7 @@ struct UserView: View {
             ProfilePicView(pubkey: pubkey, size: PFP_SIZE, highlight: .none, profiles: damus_state.profiles)
         
             VStack(alignment: .leading) {
+                
                 let profile = damus_state.profiles.lookup(id: pubkey)
                 ProfileName(pubkey: pubkey, profile: profile, damus: damus_state, show_friend_confirmed: false, show_nip5_domain: false)
                 if let about = profile?.about {

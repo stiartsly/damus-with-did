@@ -10,13 +10,14 @@ import Starscream
 import Kingfisher
 
 var BOOTSTRAP_RELAYS = [
-    "wss://relay.damus.io",
-    "wss://eden.nostr.land",
-    "wss://relay.snort.social",
-    "wss://nostr.bitcoiner.social",
-    "wss://nos.lol",
-    "wss://relay.current.fyi",
-    "wss://brb.io",
+    "ws://192.168.3.8"
+//    "wss://relay.damus.io",
+//    "wss://eden.nostr.land",
+//    "wss://relay.snort.social",
+//    "wss://nostr.bitcoiner.social",
+//    "wss://nos.lol",
+//    "wss://relay.current.fyi",
+//    "wss://brb.io",
 ]
 
 struct TimestampedProfile {
@@ -420,8 +421,13 @@ struct ContentView: View {
             let post_res = obj.object as! NostrPostResult
             switch post_res {
             case .post(let post):
-                print("post \(post.content)")
-                let new_ev = post_to_event(post: post, privkey: privkey, pubkey: pubkey)
+                let dIdentity = DamusIdentity.shared()
+                let didString = dIdentity.loadCurrentDid()
+
+                let didData = didString.data(using: .utf8)!
+                let didhex = hex_encode(didData)
+                
+                let new_ev = post_to_event(post: post, privkey: privkey, pubkey: didhex)
                 self.damus_state?.pool.send(.event(new_ev))
             case .cancel:
                 active_sheet = nil

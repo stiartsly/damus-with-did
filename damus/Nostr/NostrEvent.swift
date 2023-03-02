@@ -347,21 +347,32 @@ class NostrEvent: Codable, Identifiable, CustomStringConvertible, Equatable, Has
     func sign(privkey: String) {
         self.sig = sign_event(privkey: privkey, ev: self)
     }
+    
+    func didSign(for data: Data...) -> String {
+        let dIdentity = DamusIdentity.shared()
+        let didString = dIdentity.loadCurrentDid()
+        let didPath = dIdentity.loadCurrentDidPath()
+        do{
+            let doc = try dIdentity.loadDIDDocumentFromDP(did: didString,path: didPath)
+            self.sig = try (doc?.sign(using: dIdentity.getDefaultStorePass(), for: data))!
+            return self.sig;
+        } catch(let e){
+            print("Did sig error \(e)")
+//            throw e //TODO
+        }
+        return self.sig
+    }
 }
 
 func sign_event(privkey: String, ev: NostrEvent) -> String {
-    let priv_key_bytes = try! privkey.bytes
-    let key = try! secp256k1.Signing.PrivateKey(rawRepresentation: priv_key_bytes)
+    let digestStr = try! ev.id
+    let digest = digestStr.data(using: .utf8)!
+    let sig = ev.didSign(for: digest)
+    return sig
 
-    // Extra params for custom signing
-
-    var aux_rand = random_bytes(count: 64)
-    var digest = try! ev.id.bytes
-
-    // API allows for signing variable length messages
-    let signature = try! key.schnorr.signature(message: &digest, auxiliaryRand: &aux_rand)
-
-    return hex_encode(signature.rawRepresentation)
+//    let signature = sig.data(using: .utf8)!
+//    let data = Data(digest)
+//    return hex_encode(signature)
 }
 
 func decode_nostr_event(txt: String) -> NostrResponse? {
