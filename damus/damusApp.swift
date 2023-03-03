@@ -42,8 +42,23 @@ struct MainView: View {
         }
         .onAppear {
             print("3 ---------------------> ")
+            _ = isAppAlreadyLaunchedOnce()
             currentUserDid = get_saved_CurrentDid()
         }
+    }
+}
+
+func isAppAlreadyLaunchedOnce() -> Bool {
+    let defaults = UserDefaults.standard
+    if let _ = defaults.string(forKey:"isAppAlreadyLaunchedOnce") {
+        print("App already launched")
+        return true
+    } else {
+        let d = DamusIdentity.shared()
+        d.launchedOnce()
+        defaults.set(true, forKey:"isAppAlreadyLaunchedOnce")
+        print("App launched first time")
+        return false
     }
 }
 

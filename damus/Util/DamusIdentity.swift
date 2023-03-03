@@ -253,6 +253,16 @@ public class DamusIdentity {
         }
     }
 
+    func launchedOnce() {
+        do {
+            let didStr = "did:elastos:igEXyFHW6UV8kvmH3xbhkFEwTXodLYFg5D" // 未上链的did
+            let did = try DID(didStr)
+            try did.resolve(true)
+        }
+        catch {
+            print(" error: ", error)
+        }
+    }
 }
 
 class DaumsIDChainAdapter: DefaultDIDAdapter {
