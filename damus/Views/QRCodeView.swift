@@ -64,8 +64,10 @@ struct QRCodeView: View {
                 
                 Spacer()
                 
-                if let key = maybe_key {
-                    Image(uiImage: generateQRCode(pubkey: "nostr:" + key))
+                let idendity: DamusIdentity = DamusIdentity.shared()
+                
+                if let key = idendity.exportDIDString() {
+                    Image(uiImage: generateQRCode(pubkey: key))
                         .interpolation(.none)
                         .resizable()
                         .scaledToFit()

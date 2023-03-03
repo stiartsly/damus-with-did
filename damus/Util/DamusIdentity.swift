@@ -51,11 +51,31 @@ public class DamusIdentity {
         return instance!
     }
     
+    func loadRootIdentity() throws {
+        
+        if rootIdentity == nil {
+            let d = loadCurrentDid()
+            let p = loadCurrentDidPath()
+            _ = try loadDIDDocumentFromDP(did: d, path: p)
+        }
+    }
+    
     func exportMnemonic() -> String {
         do {
+            try loadRootIdentity()
             let e = try rootIdentity!.exportMnemonic(defaultStorePass)
             print("exportMnemonic = \(e)")
             return e
+        }
+        catch {
+            return ""
+        }
+    }
+    
+    func exportDIDString() -> String {
+        do {
+            try loadRootIdentity()
+            return didString
         }
         catch {
             return ""
@@ -68,7 +88,8 @@ public class DamusIdentity {
         if document == nil {
             document = try DID(didString).resolve()
         }
-        
+        self.didString = document?.subject.description != nil ? document!.subject.description : ""
+
         if rootIdentity == nil {
             self.rootIdentity = try didStore!.loadRootIdentity()
         }
