@@ -141,7 +141,11 @@ struct Profile: Codable {
     }
     
     static func displayName(profile: Profile?, pubkey: String) -> String {
-        let pk = bech32_nopre_pubkey(pubkey) ?? pubkey
+//        let didbytes = hex_decode(pubkey)
+//        let str=String(bytes:didbytes!,encoding: .utf8)!
+        
+        let pk = String(bytes:hex_decode(pubkey) ?? [],encoding: .utf8) ?? pubkey
+//        let pk = bech32_nopre_pubkey(pubkey) ?? pubkey
         return profile?.name ?? abbrev_pubkey(pk)
     }
 }

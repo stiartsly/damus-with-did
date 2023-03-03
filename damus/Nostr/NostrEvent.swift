@@ -356,28 +356,13 @@ class NostrEvent: Codable, Identifiable, CustomStringConvertible, Equatable, Has
             let doc = try dIdentity.loadDIDDocumentFromDP(did: didString,path: didPath)
             self.sig = try (doc?.sign(using: dIdentity.getDefaultStorePass(), for: data))!
             print("sig ====>\(self.sig)")
-            print("data ====>\(data)")
-            print("data ====>\(data[0])")
-//            let test = "testStr".data(using: .utf8)!
-            let result = try doc?.verify(signature: self.sig, onto: data[0])
-            
-            
-            print("result ====>\(result)")
-            
-            if(result==true){
-                print("=========")
-            }else{
-                print("!!!!!!!!!!")
-            }
-            
-            
+            return self.sig;
         } catch(let e){
             print("sig error ====>\(e)")
         }
         
         print("final sig ====>\(self.sig)")
         return self.sig
-        
     }
 }
 

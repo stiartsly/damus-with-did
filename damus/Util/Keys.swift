@@ -73,12 +73,19 @@ func bech32_privkey(_ privkey: String) -> String? {
 }
 
 func bech32_pubkey(_ pubkey: String) -> String? {
-    guard let bytes = hex_decode(pubkey) else {
-        return nil
-    }
-    return bech32_encode(hrp: "npub", bytes)
+    
+    
+//    guard let bytes = hex_decode(pubkey) else {
+//        return nil
+//    }
+//    return bech32_encode(hrp: "npub", bytes)
+    return decode_didpubkey(pubkey)
 }
 
+func decode_didpubkey(_ didpubkey: String) -> String? {
+    let pk = String(bytes:hex_decode(didpubkey) ?? [],encoding: .utf8) ?? didpubkey
+    return pk
+}
 func bech32_nopre_pubkey(_ pubkey: String) -> String? {
     guard let bytes = hex_decode(pubkey) else {
         return nil

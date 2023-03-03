@@ -25,7 +25,7 @@ struct MainView: View {
     var body: some View {
         Group {
             if let did = currentUserDid, !needs_setup {
-                ContentView(keypair: Keypair(pubkey: "npub13gylqvxmy7wqhxc8m4nu6d5kpxswvhlg233ftruvncsg8th36fmsgu7nvk", privkey: "nsec1tkl594j5clqe0ugh0lcgw44sg9z47m562xyg0wtvw36ukz0es7dq0434t4"), currentUserDid: did)
+                ContentView(keypair: Keypair(pubkey:  hex_encode(currentUserDid!.data(using: .utf8)!), privkey: nil), currentUserDid: did)
             } else {
                 SetupView()
                     .onReceive(handle_notify(.login)) { notif in
