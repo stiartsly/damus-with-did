@@ -66,7 +66,7 @@ struct QRCodeView: View {
                 
                 let idendity: DamusIdentity = DamusIdentity.shared()
                 
-                if let key = idendity.exportDIDString() {
+                if let key = idendity.exportMnemonic() {
                     Image(uiImage: generateQRCode(pubkey: key))
                         .interpolation(.none)
                         .resizable()
