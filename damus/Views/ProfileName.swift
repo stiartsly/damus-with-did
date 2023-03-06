@@ -42,11 +42,6 @@ struct ProfileName: View {
         self.show_friend_confirmed = show_friend_confirmed
         self.show_nip5_domain = show_nip5_domain
         self.damus_state = damus
-        
-        
-        print("pubkey===>\(pubkey)")
-        print("profile====>\(profile)")
-        print("show_friend_confirmed====>\(show_friend_confirmed)")
     }
     
     init(pubkey: String, profile: Profile?, prefix: String, damus: DamusState, show_friend_confirmed: Bool, show_nip5_domain: Bool = true) {

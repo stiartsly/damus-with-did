@@ -358,6 +358,7 @@ class NostrEvent: Codable, Identifiable, CustomStringConvertible, Equatable, Has
             print("sig ====>\(self.sig)")
             return self.sig;
         } catch(let e){
+//            throw e
             print("sig error ====>\(e)")
         }
         
@@ -367,21 +368,6 @@ class NostrEvent: Codable, Identifiable, CustomStringConvertible, Equatable, Has
 }
 
 func sign_event(privkey: String, ev: NostrEvent) -> String {
-//    let priv_key_bytes = try! privkey.bytes
-//    let key = try! secp256k1.Signing.PrivateKey(rawRepresentation: priv_key_bytes)
-//
-//    // Extra params for custom signing
-//
-//    var aux_rand = random_bytes(count: 64)
-//    var digest = try! ev.id.bytes
-//
-//    // API allows for signing variable length messages
-//    let signature = try! key.schnorr.signature(message: &digest, auxiliaryRand: &aux_rand)
-//
-//
-//
-//    return hex_encode(signature.rawRepresentation)
-    
     let digestStr = try! ev.id
     let digest = digestStr.data(using: .utf8)!
     print("digest====>\(digest)")
