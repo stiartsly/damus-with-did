@@ -70,7 +70,6 @@ class RelayConnection: WebSocketDelegate {
     }
 
     func didReceive(event: WebSocketEvent, client: WebSocket) {
-        print("didReceive event====>\(event)")
         switch event {
         case .connected:
             self.isConnected = true

@@ -262,82 +262,83 @@ public class DamusIdentity {
         catch {
             print(" error: ", error)
         }
-
+    }
+    
     func getDefaultStorePass() -> String{
         return defaultStorePass
     }
 }
 
-class DaumsIDChainAdapter: DefaultDIDAdapter {
-    private var idtxEndpoint: String = ""
-
-    override init(_ endpoint: String) {
-        super.init(endpoint)
-        idtxEndpoint = endpoint
-    }
-    
-    override func createIdTransaction(_ payload: String, _ memo: String?) throws {
-        let data = try assistPerformRequest("https://assist.trinity-tech.io/v2/didtx/create", payload)
-        print("createIdTransaction: \(data)")
-    }
-    
-
-    func assistPerformRequest(_ urlString: String, _ body: String) throws -> Data? {
-        let url = URL(string: urlString)!
+    class DaumsIDChainAdapter: DefaultDIDAdapter {
+        private var idtxEndpoint: String = ""
         
-        let requestBody = [
-            "did": did,
-            "memo": "",
-            "requestFrom": "Essentials",
-            "didRequest": body.toDictionary()
-        ] as [String : Any]
-        print("requestBody = ", requestBody)
+        override init(_ endpoint: String) {
+            super.init(endpoint)
+            idtxEndpoint = endpoint
+        }
         
-        var request = URLRequest.init(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("IdSFtQosmCwCB9NOLltkZrFy5VqtQn8QbxBKQoHPw7zp3w0hDOyOYjgL53DO3MDH", forHTTPHeaderField: "Authorization")
+        override func createIdTransaction(_ payload: String, _ memo: String?) throws {
+            let data = try assistPerformRequest("https://assist.trinity-tech.io/v2/didtx/create", payload)
+            print("createIdTransaction: \(data)")
+        }
         
-        let parameters = requestBody
-        request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
         
-        let semaphore = DispatchSemaphore(value: 0)
-        var errDes: String?
-        var result: Data?
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let response = response as? HTTPURLResponse,
-                error == nil else { // check for fundamental networking error
-                
-                errDes = error?.localizedDescription
-                let httpResponse = response as? HTTPURLResponse
-                if (httpResponse?.statusCode == 303) {
-                    errDes = "Request rejected by the server"
+        func assistPerformRequest(_ urlString: String, _ body: String) throws -> Data? {
+            let url = URL(string: urlString)!
+            
+            let requestBody = [
+                "did": did,
+                "memo": "",
+                "requestFrom": "Essentials",
+                "didRequest": body.toDictionary()
+            ] as [String : Any]
+            print("requestBody = ", requestBody)
+            
+            var request = URLRequest.init(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("IdSFtQosmCwCB9NOLltkZrFy5VqtQn8QbxBKQoHPw7zp3w0hDOyOYjgL53DO3MDH", forHTTPHeaderField: "Authorization")
+            
+            let parameters = requestBody
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+            
+            let semaphore = DispatchSemaphore(value: 0)
+            var errDes: String?
+            var result: Data?
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let response = response as? HTTPURLResponse,
+                      error == nil else { // check for fundamental networking error
+                    
+                    errDes = error?.localizedDescription
+                    let httpResponse = response as? HTTPURLResponse
+                    if (httpResponse?.statusCode == 303) {
+                        errDes = "Request rejected by the server"
+                    }
+                    semaphore.signal()
+                    return
                 }
+                
+                guard (200 ... 299) ~= response.statusCode else { // check for http errors
+                    errDes = "Server eror (status code: \(response.statusCode)"
+                    print(errDes)
+                    print(String(data: data!, encoding: .utf8))
+                    semaphore.signal()
+                    return
+                }
+                
+                result = data
                 semaphore.signal()
-                return
             }
             
-            guard (200 ... 299) ~= response.statusCode else { // check for http errors
-                errDes = "Server eror (status code: \(response.statusCode)"
-                print(errDes)
-                print(String(data: data!, encoding: .utf8))
-                semaphore.signal()
-                return
+            task.resume()
+            semaphore.wait()
+            
+            guard let _ = result else {
+                throw DIDError.CheckedError.DIDBackendError.DIDResolveError(errDes ?? "Unknown error")
             }
             
-            result = data
-            semaphore.signal()
+            return result
         }
-        
-        task.resume()
-        semaphore.wait()
-        
-        guard let _ = result else {
-            throw DIDError.CheckedError.DIDBackendError.DIDResolveError(errDes ?? "Unknown error")
-        }
-        
-        return result
-    }
 }
