@@ -18,11 +18,8 @@ struct BuilderEventView: View {
     }
     
     func subscribe(filters: [NostrFilter]) {
-        print("wangran ====> subscribe")
         damus.pool.register_handler(sub_id: subscription_uuid, handler: handle_event)
         damus.pool.send(.subscribe(.init(filters: filters, sub_id: subscription_uuid)))
-        
-        print("wangran ====> subscribe")
     }
     
     func handle_event(relay_id: String, ev: NostrConnectionEvent) {

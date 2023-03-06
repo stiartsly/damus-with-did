@@ -27,13 +27,10 @@ class Profiles {
     }
     
     func add(id: String, profile: TimestampedProfile) {
-        print("add====>\(id),\(profile)")
         profiles[id] = profile
     }
     
     func lookup(id: String) -> Profile? {
-        print("lookup====>\(id)")
-        print("profiles[id]?.profile====>\(profiles[id]?.profile)")
         return profiles[id]?.profile
     }
     

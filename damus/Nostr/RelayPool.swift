@@ -184,9 +184,6 @@ class RelayPool {
     func send(_ req: NostrRequest, to: [String]? = nil) {
         let relays = to.map{ get_relays($0) } ?? self.relays
 
-        print("wangran relays====>\(relays)")
-        print("wangran req====>\(req)")
-
         for relay in relays {
             guard relay.connection.isConnected else {
                 queue_req(r: req, relay: relay.id)

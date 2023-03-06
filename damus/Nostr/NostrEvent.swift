@@ -348,21 +348,18 @@ class NostrEvent: Codable, Identifiable, CustomStringConvertible, Equatable, Has
         self.sig = sign_event(privkey: privkey, ev: self)
     }
     
-    func didSign(for data: Data...) ->String {
+    func didSign(for data: Data...) -> String {
         let dIdentity = DamusIdentity.shared()
         let didString = dIdentity.loadCurrentDid()
         let didPath = dIdentity.loadCurrentDidPath()
         do{
             let doc = try dIdentity.loadDIDDocumentFromDP(did: didString,path: didPath)
             self.sig = try (doc?.sign(using: dIdentity.getDefaultStorePass(), for: data))!
-            print("sig ====>\(self.sig)")
             return self.sig;
         } catch(let e){
-//            throw e
-            print("sig error ====>\(e)")
+            print("Did sig error \(e)")
+//            throw e //TODO
         }
-        
-        print("final sig ====>\(self.sig)")
         return self.sig
     }
 }
@@ -370,9 +367,6 @@ class NostrEvent: Codable, Identifiable, CustomStringConvertible, Equatable, Has
 func sign_event(privkey: String, ev: NostrEvent) -> String {
     let digestStr = try! ev.id
     let digest = digestStr.data(using: .utf8)!
-    print("digest====>\(digest)")
-    print("privkey====?\(privkey)")
-    print("ev====?\(ev)")
     let sig = ev.didSign(for: digest)
     return sig
 
