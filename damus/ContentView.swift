@@ -10,7 +10,9 @@ import Starscream
 import Kingfisher
 
 var BOOTSTRAP_RELAYS = [
-    "ws://192.168.3.8"
+    "ws://95.179.222.182",
+    "ws://137.220.48.81"
+    
 //    "wss://relay.damus.io",
 //    "wss://eden.nostr.land",
 //    "wss://relay.snort.social",
